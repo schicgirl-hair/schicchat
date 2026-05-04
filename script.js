@@ -89,7 +89,7 @@ function showAlreadyUsedScreen() {
     <p>Tu as déjà utilisé ton diagnostic gratuit Schicgirl.</p>
     <p>Pour aller plus loin, tu peux accéder aux offres ou choisir un diagnostic premium plus personnalisé.</p>
     <p><a href="${settings.shopLink}" target="_blank">Comment hydrater les cheveux ?</a></p>
-    <p><a href="${settings.premiumLink}" target="_blank">Les 15 erreurs capillaires</a></p>
+    <p><a href="${settings.premiumLink}" target="_blank">Diagnostique Capillaire Personnalisé</a></p>
   `;
   chatBox.appendChild(div);
 }
