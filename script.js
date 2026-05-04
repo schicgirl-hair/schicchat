@@ -86,10 +86,10 @@ function showAlreadyUsedScreen() {
   div.className = "used-card";
   div.innerHTML = `
     <h2>💛 Diagnostic déjà utilisé</h2>
-    <p>Tu as déjà utilisé ton diagnostic gratuit Schicgirl.</p>
-    <p>Pour aller plus loin, tu peux accéder aux offres ou choisir un diagnostic premium plus personnalisé.</p>
-    <p><a href="${settings.shopLink}" target="_blank">Comment hydrater les cheveux ?</a></p>
-    <p><a href="${settings.premiumLink}" target="_blank">Diagnostique Capillaire Personnalisé</a></p>
+    <p>Tu as déjà utilisé ton diagnostic gratuit Schicgirl sur ce navigateur.</p>
+    <p>Pour aller plus loin, tu peux accéder au guide hydratation ou choisir une routine personnalisée.</p>
+    <p><a href="${settings.shopLink}" target="_blank" rel="noopener">Voir le guide hydratation</a></p>
+    <p><a href="${settings.premiumLink}" target="_blank" rel="noopener">Voir la routine personnalisée</a></p>
   `;
   chatBox.appendChild(div);
 }
@@ -104,10 +104,10 @@ function addMessage(text, sender = "bot", extra = "") {
   const div = document.createElement("div");
   div.className = `message ${sender} ${extra}`;
   if (extra === "html") {
-  div.innerHTML = text;
-} else {
-  div.textContent = text;
-}
+    div.innerHTML = text;
+  } else {
+    div.textContent = text;
+  }
   chatBox.appendChild(div);
 
   // Pour les réponses longues (diagnostic), on affiche le DÉBUT de la réponse.
@@ -151,7 +151,7 @@ function startChat() {
   setQuickReplies([]);
   setStep("ask_name");
   addMessage("💛 Bienvenue chez Schicgirl. Je suis SchicChat, ton coach capillaire virtuel.");
-  addMessage("Je vais analyser tes cheveux comme une coach : hydratation, porosité, casse, cuir chevelu, climat, routine, alimentation et habitudes.\n\nÀ la fin, tu reçois un mini diagnostic détaillé avec une routine étape par étape.\n\nComment veux-tu que je t’appelle ?");
+  addMessage("Je vais analyser tes cheveux avec douceur : hydratation, porosité, casse, cuir chevelu, climat, routine et habitudes.\n\nÀ la fin, tu reçois un mini diagnostic utile avec une routine étape par étape.\n\nComment veux-tu que je t’appelle ?");
 }
 
 function handleUserReply(value, label = value) {
@@ -161,9 +161,9 @@ function handleUserReply(value, label = value) {
 
   switch (state.step) {
     case "ask_name":
-      state.name = raw;
+      state.name = raw || "ma belle";
       setStep("ask_contact");
-      addMessage(`Merci ${state.name} 💛\nTu peux laisser ton email ou WhatsApp pour sauvegarder ton mini diagnostic, ou continuer sans contact.`);
+      addMessage(`Merci ${state.name} 💛\nTu peux laisser ton email ou WhatsApp si tu veux le garder dans ton résumé local, ou continuer sans contact.`);
       setQuickReplies([{ label: "Continuer sans contact", value: "skip" }]);
       break;
 
@@ -498,15 +498,17 @@ ${analysis.bonus}`, "bot", "result");
 
   const settings = getSettings();
   addMessage(
-  `✨ Ce que je te recommande pour aller plus loin :
+  `<div class="offer-card">
+    <h3>✨ Pour aller plus loin</h3>
+    <p>Ton diagnostic gratuit te donne une base. Pour progresser, choisis l’offre qui correspond le mieux à ton besoin actuel :</p>
 
-💧 Si ton problème principal est la sécheresse :
-<a href="${settings.shopLink}" target="_blank">Accéder au guide hydratation</a>
+    <div class="offer-actions">
+      <a class="offer-button" href="${settings.shopLink}" target="_blank" rel="noopener">💧 Voir le guide hydratation</a>
+      <a class="offer-button secondary" href="${settings.premiumLink}" target="_blank" rel="noopener">🌿 Voir la routine personnalisée</a>
+    </div>
 
-🌿 Si tu veux une routine complète adaptée à TON cas :
-<a href="${settings.premiumLink}" target="_blank">Accéder à la routine personnalisée</a>
-
-💛 Choisis l’offre qui correspond le mieux à ton besoin actuel.`,
+    <p>💛 Conseil Schicgirl : commence simple, observe tes cheveux pendant 14 jours, puis ajuste.</p>
+  </div>`,
   "bot",
   "html"
 );
@@ -516,7 +518,7 @@ ${analysis.bonus}`, "bot", "result");
 
   const replies = [
     {label:"Voir les offres",value:"shop"},
-    {label:"Diagnostic premium",value:"premium"}
+    {label:"Routine personnalisée",value:"premium"}
   ];
 
   if (!oneUseEnabled()) {
