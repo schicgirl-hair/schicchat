@@ -5,5 +5,6 @@ window.SCHICCHAT_CONFIG = {
   leadStorageKey: "schicchat_coach_leads",
   settingsStorageKey: "schicchat_coach_settings",
   enableOneUse: true,
-  usedStorageKey: "schicchat_used_once"
+  usedStorageKey: "schicchat_used_once",
+  clientToken: "schicchat_client_2026-12544455"
 };
