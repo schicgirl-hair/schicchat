@@ -99,7 +99,7 @@ quickReplies.style.display = "none";
 </a>
 
 <a class="offer-button secondary" href="${settings.premiumLink}" target="_blank">
-🌿 Routine personnalisée
+Routine personnalisée
 </a>
   `;
   chatBox.appendChild(div);
@@ -509,15 +509,15 @@ ${analysis.bonus}`, "bot", "result");
 
   const settings = getSettings();
   addMessage(
-  `✨ Ce que je te recommande pour aller plus loin :
+  `💛 Ce que je te recommande pour aller plus loin :
 
-💧 Si ton problème principal est la sécheresse :
+Si ton problème principal est la sécheresse :
 <a href="${settings.shopLink}" target="_blank">Accéder au guide hydratation</a>
 
-🌿 Si tu veux une routine complète adaptée à TON cas :
+Si tu veux une routine complète adaptée à TON cas :
 <a href="${settings.premiumLink}" target="_blank">Accéder à la routine personnalisée</a>
 
-💛 Choisis l’offre qui correspond le mieux à ton besoin actuel.`,
+Choisis l’offre qui correspond le mieux à ton besoin actuel.`,
   "bot",
   "html"
 );
