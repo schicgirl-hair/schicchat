@@ -94,13 +94,6 @@ quickReplies.style.display = "none";
     <p>Pour aller plus loin, tu peux accéder aux offres ou choisir un diagnostic premium plus personnalisé.</p>
     <p><a href="${settings.shopLink}" target="_blank">Comment hydrater les cheveux ?</a></p>
     <p><a href="${settings.premiumLink}" target="_blank">Diagnostique Capillaire Personnalisé</a></p>
-    <a class="offer-button" href="${settings.shopLink}" target="_blank">
-💧 Voir le guide hydratation
-</a>
-
-<a class="offer-button secondary" href="${settings.premiumLink}" target="_blank">
-Routine personnalisée
-</a>
   `;
   chatBox.appendChild(div);
 }
