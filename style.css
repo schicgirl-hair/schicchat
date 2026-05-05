@@ -430,3 +430,33 @@ h1 {
     font-size: 13px;
   }
 }
+
+/* Empêche le zoom automatique sur iPhone */
+.chat-form input,
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+.client-shell {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.chat-form input {
+  height: 44px;
+}
+
+.chat-form button {
+  height: 44px;
+}
+
