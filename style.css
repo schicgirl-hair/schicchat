@@ -460,3 +460,10 @@ body {
   height: 44px;
 }
 
+
+.offer-card{background:#fff8ee;border:1px solid #e7c89a;border-radius:18px;padding:16px;white-space:normal}
+.offer-card h3{font-family:Georgia,serif;margin:0 0 10px;font-size:20px}
+.offer-actions{display:grid;gap:10px;margin:12px 0}
+.offer-button{display:block;text-align:center;text-decoration:none;background:var(--brown);color:white;border-radius:999px;padding:12px 16px;font-weight:800}
+.offer-button.secondary{background:var(--gold)}
+.html{white-space:normal}
