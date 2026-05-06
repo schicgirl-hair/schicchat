@@ -82,10 +82,8 @@ function showAlreadyUsedScreen() {
   setQuickReplies([]);
   progressBar.style.width = "100%";
   // 🔒 Cache complètement la zone de réponse
-chatForm.innerHTML = "";
-
-// 🔒 Cache les boutons (sécurité)
-quickReplies.style.display = "none";
+  if (chatForm) chatForm.style.display = "none";
+  if (quickReplies) quickReplies.style.display = "none";
   const div = document.createElement("div");
   div.className = "used-card";
   div.innerHTML = `
@@ -108,10 +106,10 @@ function addMessage(text, sender = "bot", extra = "") {
   const div = document.createElement("div");
   div.className = `message ${sender} ${extra}`;
   if (extra === "html") {
-  div.innerHTML = text;
-} else {
-  div.textContent = text;
-}
+    div.innerHTML = text;
+  } else {
+    div.textContent = text;
+  }
   chatBox.appendChild(div);
 
   // Pour les réponses longues (diagnostic), on affiche le DÉBUT de la réponse.
@@ -149,6 +147,9 @@ function startChat() {
     showAlreadyUsedScreen();
     return;
   }
+
+  if (chatForm) chatForm.style.display = "flex";
+  if (quickReplies) quickReplies.style.display = "flex";
 
   resetState();
   chatBox.innerHTML = "";
@@ -449,9 +450,26 @@ function handleUserReply(value, label = value) {
 }
 
 function saveLead() {
+  const lead = {...state, date: new Date().toISOString()};
   const leads = JSON.parse(localStorage.getItem(CONFIG.leadStorageKey) || "[]");
-  leads.push({...state, date: new Date().toISOString()});
+  leads.push(lead);
   localStorage.setItem(CONFIG.leadStorageKey, JSON.stringify(leads));
+  sendLeadToGoogleSheet(lead);
+}
+
+function sendLeadToGoogleSheet(lead) {
+  if (!CONFIG.webAppUrl || CONFIG.webAppUrl.includes("PASTE_YOUR")) {
+    console.warn("Google Apps Script Web App URL is not configured.");
+    return;
+  }
+
+  const payload = new URLSearchParams();
+  payload.append("action", "saveLead");
+  payload.append("token", CONFIG.clientToken);
+  payload.append("data", JSON.stringify(lead));
+
+  fetch(CONFIG.webAppUrl, { method: "POST", body: payload })
+    .catch((error) => console.warn("Lead saved locally but not sent to Google Sheet:", error));
 }
 
 function buildCoachDiagnosis() {
@@ -462,6 +480,15 @@ function buildCoachDiagnosis() {
   state.priority = analysis.priority;
   state.offer = analysis.offer;
   state.redFlags = analysis.redFlags;
+
+  addMessage(`💛 ${state.name || "Ma belle"}, je veux que tu comprennes une chose importante :
+
+Tes cheveux ne sont pas le problème.
+Ils essaient juste de s’adapter à ce que tu leur donnes.
+
+Aujourd’hui, on va simplement les écouter autrement.`, "bot");
+
+  addMessage(`✨ En tant que coach capillaire spécialisée cheveux crépus, voici ce que je te recommande personnellement :`, "bot");
 
   addMessage(`💛 Mini diagnostic Schicgirl pour ${state.name || "ma belle"}
 
@@ -502,15 +529,18 @@ ${analysis.bonus}`, "bot", "result");
 
   const settings = getSettings();
   addMessage(
-  `💛 Ce que je te recommande pour aller plus loin :
-
-Si ton problème principal est la sécheresse :
-<a href="${settings.shopLink}" target="_blank">Accéder au guide hydratation</a>
-
-Si tu veux une routine complète adaptée à TON cas :
-<a href="${settings.premiumLink}" target="_blank">Accéder à la routine personnalisée</a>
-
-Choisis l’offre qui correspond le mieux à ton besoin actuel.`,
+  `<div class="offer-card">
+    <h3>💛 Si tu veux aller plus loin avec moi</h3>
+    <p>Ton diagnostic gratuit te donne une base. Maintenant, le plus important est de choisir l’action adaptée à ton besoin actuel.</p>
+    <p><strong>💧 Le guide hydratation</strong> est parfait si ton problème principal est la sécheresse, les cheveux rêches ou l’hydratation qui ne dure pas.</p>
+    <p><strong>🌿 La routine personnalisée</strong> est idéale si tu veux une routine vraiment adaptée à TON profil : porosité, casse, climat, habitudes, objectif et niveau de temps.</p>
+    <div class="offer-actions">
+      <a class="offer-button" href="${settings.shopLink}" target="_blank" rel="noopener">💧 Accéder au guide hydratation</a>
+      <a class="offer-button secondary" href="${settings.premiumLink}" target="_blank" rel="noopener">🌿 Accéder à la routine personnalisée</a>
+    </div>
+    <p>👉 C’est ce qui fait la différence entre “tester des conseils” et commencer à voir des résultats avec une vraie direction.</p>
+    <p>Je te laisse choisir ce qui est le mieux pour toi 💛</p>
+  </div>`,
   "bot",
   "html"
 );

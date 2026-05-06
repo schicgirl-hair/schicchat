@@ -9,3 +9,4 @@ window.SCHICCHAT_CONFIG = {
   enableOneUse: true,
   usedStorageKey: "schicchat_used_once"
 };
+
