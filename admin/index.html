@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchicChat Admin | Schicgirl</title>
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <main class="admin-shell">
+    <section id="loginCard" class="card">
+      <p class="eyebrow">Schicgirl™ Admin</p>
+      <h1>Accès privé</h1>
+      <p>Entre ton mot de passe local, puis ton lien Apps Script et ton token admin.</p>
+
+      <label>Mot de passe local</label>
+      <input id="localPassword" type="password" placeholder="Mot de passe admin" />
+
+      <label>Google Apps Script Web App URL</label>
+      <input id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+
+      <label>Admin token</label>
+      <input id="adminToken" type="password" placeholder="ADMIN_TOKEN depuis Code.gs" />
+
+      <button id="loginBtn">Entrer</button>
+      <p class="hint">Change le mot de passe dans <strong>admin.js</strong> avant de publier.</p>
+    </section>
+
+    <section id="dashboard" class="card hidden">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow">Schicgirl™ Admin</p>
+          <h1>Dashboard leads</h1>
+        </div>
+        <button id="logoutBtn" class="secondary">Déconnexion</button>
+      </div>
+
+      <div class="stats">
+        <div><strong id="leadCount">0</strong><span>Total leads</span></div>
+        <div><strong id="lastProfile">—</strong><span>Dernier profil</span></div>
+      </div>
+
+      <div class="actions">
+        <button id="refreshBtn">Rafraîchir</button>
+        <button id="exportBtn" class="secondary">Exporter CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Nom</th>
+              <th>Contact</th>
+              <th>Pays</th>
+              <th>Profil</th>
+              <th>Score</th>
+              <th>Priorité</th>
+            </tr>
+          </thead>
+          <tbody id="leadRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
