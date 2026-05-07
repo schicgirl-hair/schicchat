@@ -3,13 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Diagnostic Capillaire Gratuit | Schicgirl</title>
-  <meta name="author" content="Schicgirl">
-  <meta property="og:title" content="Diagnostic Capillaire Schicgirl">
-  <meta property="og:description" content="Découvre ce qui freine vraiment ta croissance et reçois une routine sur mesure.">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta name="author" content="Schicgirl" />
+  <meta name="description" content="Diagnostic capillaire gratuit pour cheveux crépus, bouclés et naturels. Découvre ce qui freine ta pousse, ta rétention d’hydratation ou la santé de tes cheveux avec Schicgirl." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://decodehair.schicgirl.me/" />
+
+  <!-- Social preview / Facebook / WhatsApp -->
+  <meta property="og:title" content="Diagnostic Capillaire Schicgirl" />
+  <meta property="og:description" content="Découvre ce qui freine vraiment tes cheveux et reçois une direction personnalisée." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://decodehair.schicgirl.me/" />
+  <meta property="og:image" content="https://decodehair.schicgirl.me/preview.jpg" />
+  <meta property="og:site_name" content="Schicgirl" />
+
+  <!-- Twitter/X preview -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Diagnostic Capillaire Schicgirl" />
+  <meta name="twitter:description" content="Découvre ce qui freine vraiment tes cheveux et reçois une direction personnalisée." />
+  <meta name="twitter:image" content="https://decodehair.schicgirl.me/preview.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Optional: Meta Pixel placeholder
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'PASTE_META_PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+  -->
+
+  <!-- Optional: Google Analytics placeholder
+  <script async src="https://www.googletagmanager.com/gtag/js?id=PASTE_GA_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'PASTE_GA_ID');
+  </script>
+  -->
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -24,6 +69,7 @@
       --gold-lt:  #d4a55e;
       --muted:    #9a7060;
       --white:    #ffffff;
+      --danger:   #8f382d;
       --shadow-s: 0 4px 24px rgba(62,38,28,.08);
       --shadow-m: 0 12px 48px rgba(62,38,28,.13);
       --shadow-l: 0 24px 80px rgba(62,38,28,.18);
@@ -34,8 +80,7 @@
     }
 
     html, body {
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
       font-family: var(--sans);
       color: var(--brown);
       background: var(--cream);
@@ -43,13 +88,13 @@
 
     body {
       min-height: 100dvh;
+      overflow: hidden;
       background:
         radial-gradient(ellipse 70% 55% at 8% 0%, #f2ccc7 0%, transparent 55%),
         radial-gradient(ellipse 60% 50% at 92% 100%, #edd9b0 0%, transparent 50%),
         radial-gradient(ellipse 80% 60% at 50% 50%, #fdf6ee 0%, transparent 100%);
     }
 
-    /* ── Layout ─────────────────────────────────────── */
     .shell {
       width: min(1000px, 96vw);
       height: 100dvh;
@@ -60,22 +105,31 @@
       padding: 10px 0;
     }
 
-    /* ── Intro header ────────────────────────────────── */
     .intro {
       flex: 0 0 auto;
-      background: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.72);
       backdrop-filter: blur(18px);
       border: 1px solid rgba(176,123,56,.2);
       border-radius: var(--radius-lg);
-      padding: 14px 22px;
+      padding: 14px 22px 12px;
       text-align: center;
       box-shadow: var(--shadow-s);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro::after {
+      content: "";
+      position: absolute;
+      inset: auto 18% -42px 18%;
+      height: 55px;
+      background: radial-gradient(ellipse, rgba(176,123,56,.15), transparent 70%);
+      pointer-events: none;
     }
 
     .eyebrow {
-      font-family: var(--sans);
       font-size: 10.5px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: .2em;
       text-transform: uppercase;
       color: var(--gold);
@@ -95,17 +149,16 @@
       font-size: 12.5px;
       color: var(--muted);
       line-height: 1.5;
-      max-width: 640px;
+      max-width: 700px;
       margin: auto;
     }
 
-    /* ── Chat panel ──────────────────────────────────── */
     .panel {
       flex: 1 1 auto;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      background: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.80);
       backdrop-filter: blur(18px);
       border: 1px solid rgba(176,123,56,.18);
       border-radius: var(--radius-lg);
@@ -114,339 +167,154 @@
       position: relative;
     }
 
-    /* Progress */
-    .progress-track {
-      height: 3px;
-      background: rgba(176,123,56,.12);
-      flex-shrink: 0;
-    }
+    .progress-track { height: 3px; background: rgba(176,123,56,.12); flex-shrink: 0; }
     .progress-fill {
-      height: 100%;
-      width: 0%;
+      height: 100%; width: 0%;
       background: linear-gradient(90deg, var(--rose), var(--gold));
       transition: width .5s cubic-bezier(.4,0,.2,1);
     }
 
-    /* Reset btn */
     #resetBtn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px; border-radius: 50%;
       border: 1px solid rgba(176,123,56,.25);
-      background: rgba(255,255,255,.8);
-      color: var(--muted);
-      font-size: 15px;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: all .2s;
-      z-index: 10;
+      background: rgba(255,255,255,.84);
+      color: var(--muted); font-size: 15px; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      transition: all .2s; z-index: 10;
     }
     #resetBtn:hover { background: var(--warm); color: var(--brown); }
     #resetBtn.visible { display: flex; }
 
-    /* Chat messages */
     .chat-box {
-      flex: 1 1 auto;
-      min-height: 0;
-      overflow-y: auto;
-      padding: 20px 18px 12px;
-      scroll-behavior: smooth;
+      flex: 1 1 auto; min-height: 0; overflow-y: auto;
+      padding: 20px 18px 12px; scroll-behavior: smooth;
     }
-
     .chat-box::-webkit-scrollbar { width: 4px; }
     .chat-box::-webkit-scrollbar-thumb { background: rgba(176,123,56,.25); border-radius: 4px; }
 
     .msg {
-      max-width: 85%;
-      margin-bottom: 10px;
-      border-radius: 18px;
-      padding: 11px 15px;
-      font-size: 13.5px;
-      line-height: 1.55;
-      white-space: pre-line;
-      animation: msgIn .28s cubic-bezier(.34,1.2,.64,1) both;
+      max-width: 85%; margin-bottom: 10px; border-radius: 18px;
+      padding: 11px 15px; font-size: 13.5px; line-height: 1.55;
+      white-space: pre-line; animation: msgIn .28s cubic-bezier(.34,1.2,.64,1) both;
     }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(8px) scale(.97); }
-      to   { opacity: 1; transform: none; }
-    }
+    .msg.bot { background: var(--white); border: 1px solid rgba(228,180,175,.45); border-bottom-left-radius: 6px; color: var(--brown); }
+    .msg.user { background: var(--brown); color: var(--white); margin-left: auto; border-bottom-right-radius: 6px; }
+    .msg.result { background: linear-gradient(145deg, #fffaf3, #fff8ee); border: 1px solid rgba(176,123,56,.3); max-width: 100%; font-size: 13px; animation: fadeUp .5s ease both; }
+    .msg.html-msg { background: transparent; border: none; padding: 0; max-width: 100%; }
 
-    .msg.bot {
-      background: var(--white);
-      border: 1px solid rgba(228,180,175,.45);
-      border-bottom-left-radius: 6px;
-      color: var(--brown);
-    }
-
-    .msg.user {
-      background: var(--brown);
-      color: var(--white);
-      margin-left: auto;
-      border-bottom-right-radius: 6px;
-    }
-
-    .msg.result {
-      background: linear-gradient(145deg, #fffaf3, #fff8ee);
-      border: 1px solid rgba(176,123,56,.3);
-      max-width: 100%;
-      font-size: 13px;
-    }
-
-    .msg.html-msg {
-      background: transparent;
-      border: none;
-      padding: 0;
-      max-width: 100%;
-    }
-
-    /* Typing indicator */
     .typing-indicator {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 11px 15px;
-      background: var(--white);
-      border: 1px solid rgba(228,180,175,.45);
-      border-radius: 18px;
-      border-bottom-left-radius: 6px;
-      max-width: 68px;
-      margin-bottom: 10px;
-      animation: msgIn .28s both;
+      display: flex; align-items: center; gap: 5px; padding: 11px 15px;
+      background: var(--white); border: 1px solid rgba(228,180,175,.45);
+      border-radius: 18px; border-bottom-left-radius: 6px;
+      max-width: 68px; margin-bottom: 10px; animation: msgIn .28s both;
     }
-
-    .typing-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--rose);
-      animation: typingBounce 1.2s ease-in-out infinite;
-    }
-
+    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); animation: typingBounce 1.2s ease-in-out infinite; }
     .typing-dot:nth-child(2) { animation-delay: .18s; }
     .typing-dot:nth-child(3) { animation-delay: .36s; }
+    @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: .6; } 30% { transform: translateY(-6px); opacity: 1; } }
 
-    @keyframes typingBounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: .6; }
-      30% { transform: translateY(-6px); opacity: 1; }
-    }
-
-    /* Quick replies */
     .quick-replies {
-      flex: 0 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 0 16px 10px;
-      max-height: 100px;
-      overflow-y: auto;
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 0 16px 10px; max-height: 112px; overflow-y: auto;
     }
-
     .quick-btn {
-      padding: 8px 14px;
-      border-radius: 999px;
+      padding: 8px 14px; border-radius: 999px;
       border: 1.5px solid rgba(176,123,56,.35);
-      background: rgba(255,255,255,.9);
-      color: var(--brown-md);
-      font-family: var(--sans);
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .18s;
-      white-space: nowrap;
+      background: rgba(255,255,255,.92); color: var(--brown-md);
+      font-family: var(--sans); font-size: 12.5px; font-weight: 600;
+      cursor: pointer; transition: all .18s; white-space: nowrap;
     }
+    .quick-btn:hover:not(:disabled) { background: var(--warm); border-color: var(--gold); color: var(--brown); }
+    .quick-btn:disabled { opacity: .55; cursor: not-allowed; }
 
-    .quick-btn:hover {
-      background: var(--warm);
-      border-color: var(--gold);
-      color: var(--brown);
-    }
-
-    /* Input form */
     .chat-form {
-      flex: 0 0 auto;
-      display: flex;
-      gap: 8px;
-      padding: 10px 14px 12px;
-      border-top: 1px solid rgba(228,180,175,.35);
-      background: rgba(253,246,238,.9);
+      flex: 0 0 auto; display: flex; gap: 8px;
+      padding: 10px 14px 12px; border-top: 1px solid rgba(228,180,175,.35);
+      background: rgba(253,246,238,.92);
     }
-
     .chat-form input {
-      flex: 1;
-      height: 44px;
-      border-radius: 999px;
-      border: 1.5px solid rgba(176,123,56,.28);
-      padding: 0 18px;
-      font-family: var(--sans);
-      font-size: 16px;
-      background: var(--white);
-      color: var(--brown);
-      outline: none;
-      transition: border-color .18s;
+      flex: 1; height: 44px; border-radius: 999px;
+      border: 1.5px solid rgba(176,123,56,.28); padding: 0 18px;
+      font-family: var(--sans); font-size: 16px; background: var(--white);
+      color: var(--brown); outline: none; transition: border-color .18s;
     }
-
     .chat-form input:focus { border-color: var(--gold); }
     .chat-form input::placeholder { color: var(--muted); font-size: 13.5px; }
+    .chat-form input:disabled { opacity: .65; }
 
     .send-btn {
-      height: 44px;
-      padding: 0 20px;
-      border-radius: 999px;
-      border: none;
-      background: var(--brown);
-      color: var(--white);
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .18s;
-      white-space: nowrap;
+      height: 44px; padding: 0 20px; border-radius: 999px; border: none;
+      background: var(--brown); color: var(--white); font-family: var(--sans);
+      font-size: 13px; font-weight: 700; cursor: pointer; transition: all .18s; white-space: nowrap;
     }
+    .send-btn:hover:not(:disabled) { background: var(--brown-md); }
+    .send-btn:disabled { opacity: .6; cursor: not-allowed; }
 
-    .send-btn:hover { background: var(--brown-md); }
-
-    /* ── Result card ─────────────────────────────────── */
-    .result-section {
-      margin-bottom: 16px;
-    }
-
+    .result-section { margin-bottom: 16px; }
     .result-label {
-      font-family: var(--sans);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 5px;
     }
-
-    .result-section p, .result-section ul {
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--brown);
-    }
-
+    .result-section p, .result-section ul { font-size: 13px; line-height: 1.64; color: var(--brown); }
     .score-ring {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(176,123,56,.1);
-      border-radius: 12px;
-      padding: 8px 14px;
-      margin-bottom: 12px;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(176,123,56,.1); border-radius: 12px;
+      padding: 8px 14px; margin-bottom: 12px;
     }
+    .score-num { font-family: var(--serif); font-size: 36px; font-weight: 600; color: var(--gold); line-height: 1; }
+    .score-label { font-size: 12px; color: var(--muted); line-height: 1.3; }
 
-    .score-num {
-      font-family: var(--serif);
-      font-size: 36px;
-      font-weight: 600;
-      color: var(--gold);
-      line-height: 1;
+    .teaser-card {
+      background: linear-gradient(145deg, #fffaf3, #fff5ea);
+      border: 1px solid rgba(176,123,56,.26);
+      border-radius: var(--radius);
+      padding: 15px 16px;
+      box-shadow: var(--shadow-s);
+      max-width: 92%;
     }
+    .teaser-card strong { color: var(--brown); }
 
-    .score-label {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-
-    /* ── Offer card ──────────────────────────────────── */
     .offer-wrap {
       background: linear-gradient(145deg, #fffaf3, #fff5ea);
       border: 1px solid rgba(176,123,56,.35);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-top: 4px;
+      border-radius: var(--radius); padding: 20px; margin-top: 4px;
+      box-shadow: var(--shadow-m); animation: fadeUp .5s ease both;
     }
-
-    .offer-wrap h3 {
-      font-family: var(--serif);
-      font-size: 22px;
-      font-weight: 400;
-      margin-bottom: 10px;
-      color: var(--brown);
-    }
-
-    .offer-wrap p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-      margin-bottom: 10px;
-    }
-
-    .offer-btns {
-      display: grid;
-      gap: 10px;
-      margin: 14px 0;
-    }
-
+    .offer-wrap h3 { font-family: var(--serif); font-size: 24px; font-weight: 400; margin-bottom: 10px; color: var(--brown); }
+    .offer-wrap p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+    .offer-btns { display: grid; gap: 10px; margin: 14px 0; }
     .offer-btn {
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      padding: 13px 18px;
-      border-radius: 999px;
-      font-family: var(--sans);
-      font-size: 13.5px;
-      font-weight: 700;
-      transition: all .2s;
+      display: block; text-align: center; text-decoration: none; padding: 13px 18px;
+      border-radius: 999px; font-family: var(--sans); font-size: 13.5px;
+      font-weight: 800; transition: all .2s;
     }
-
-    .offer-btn.primary {
-      background: var(--brown);
-      color: var(--white);
-    }
-
+    .offer-btn.primary { background: var(--brown); color: var(--white); }
     .offer-btn.primary:hover { background: var(--brown-md); }
-
-    .offer-btn.gold {
-      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
-      color: var(--white);
-    }
-
+    .offer-btn.gold { background: linear-gradient(135deg, var(--gold), var(--gold-lt)); color: var(--white); }
     .offer-btn.gold:hover { filter: brightness(1.05); }
 
-    /* ── Used screen ─────────────────────────────────── */
-    .used-screen {
-      padding: 32px 24px;
+    .used-screen { padding: 32px 24px; text-align: center; }
+    .used-screen h2 { font-family: var(--serif); font-size: 30px; font-weight: 400; margin-bottom: 10px; }
+    .used-screen p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+    .used-screen a { color: var(--gold); font-weight: 700; text-decoration: none; }
+
+    .divider { height: 1px; background: rgba(176,123,56,.18); margin: 12px 0; }
+
+    .legal-footer {
+      flex: 0 0 auto;
       text-align: center;
+      font-size: 10.5px;
+      line-height: 1.4;
+      color: rgba(62,38,28,.62);
+      padding: 0 12px 2px;
     }
 
-    .used-screen h2 {
-      font-family: var(--serif);
-      font-size: 30px;
-      font-weight: 400;
-      margin-bottom: 10px;
-    }
-
-    .used-screen p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 8px;
-    }
-
-    .used-screen a {
-      color: var(--gold);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    /* ── Divider ─────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: rgba(176,123,56,.18);
-      margin: 12px 0;
-    }
-
-    /* ── Responsive ──────────────────────────────────── */
     @media (max-width: 600px) {
+      body { overflow: hidden; }
       .shell { padding: 6px 0; gap: 7px; width: 100%; }
       .intro { padding: 10px 14px; border-radius: 14px; }
       .intro h1 { font-size: clamp(20px, 6.5vw, 28px); }
@@ -455,66 +323,71 @@
       .chat-box { padding: 14px 12px 8px; }
       .msg { font-size: 13px; max-width: 94%; }
       .chat-form { padding: 8px 10px 10px; }
+      .send-btn { padding: 0 14px; }
+      .legal-footer { font-size: 9.8px; }
     }
 
     @media (max-height: 680px) {
       .intro-sub { display: none; }
       .intro h1 { font-size: clamp(19px, 2.6vw, 26px); }
       .intro { padding: 8px 14px; }
+      .legal-footer { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="shell">
+    <header class="intro">
+      <p class="eyebrow">Schicgirl™ — Diagnostic Capillaire</p>
+      <h1>Découvre ce qui freine vraiment tes cheveux</h1>
+      <p class="intro-sub">Réponds à quelques questions sincères et reçois une direction personnalisée : ton profil capillaire, ton score santé, tes priorités et les prochaines étapes adaptées à tes cheveux.</p>
+    </header>
 
-<div class="shell">
-  <header class="intro">
-    <p class="eyebrow">Schicgirl™ — Diagnostic Capillaire</p>
-    <h1>Découvre ce qui freine vraiment tes cheveux</h1>
-    <p class="intro-sub">Réponds à quelques questions sincères et reçois un diagnostic personnalisé : ton profil capillaire, ton score santé, une routine détaillée et un plan d'action sur 7 jours.</p>
-  </header>
+    <main class="panel" aria-label="Diagnostic capillaire Schicgirl">
+      <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+      <button id="resetBtn" title="Recommencer" aria-label="Recommencer">↻</button>
+      <div class="chat-box" id="chatBox" role="log" aria-live="polite"></div>
+      <div class="quick-replies" id="quickReplies"></div>
+      <form class="chat-form" id="chatForm" autocomplete="off">
+        <input id="userInput" placeholder="Écris ta réponse ici…" aria-label="Réponse" />
+        <button type="submit" class="send-btn" id="sendBtn">Envoyer</button>
+      </form>
+    </main>
 
-  <main class="panel">
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <button id="resetBtn" title="Recommencer" aria-label="Recommencer">↻</button>
-    <div class="chat-box" id="chatBox"></div>
-    <div class="quick-replies" id="quickReplies"></div>
-    <form class="chat-form" id="chatForm" autocomplete="off">
-      <input id="userInput" placeholder="Écris ta réponse ici…" />
-      <button type="submit" class="send-btn">Envoyer</button>
-    </form>
-  </main>
-</div>
+    <footer class="legal-footer">
+      Schicgirl™ • Natural Hair Education — Ce diagnostic est éducatif et ne remplace pas un avis médical professionnel.
+    </footer>
+  </div>
 
 <script>
-// ─── Config (remplace par ton config.js externe si besoin) ───────────────────
+// IMPORTANT SÉCURITÉ : ne mets jamais de token admin dans ce fichier public.
+// Le clientToken ci-dessous est seulement un identifiant public de formulaire. Toute vraie validation doit être faite côté Apps Script / backend.
 const CONFIG = {
   shopLink:          "https://selar.com/hydratation-cheveux-crepus",
   premiumLink:       "https://selar.com/70t3ur414k",
   customFinal:       "💛 Choisis l'offre qui correspond le mieux à ton besoin actuel.",
   webAppUrl:         "https://script.google.com/macros/s/AKfycbz3a2umYva-S2SH20gMDa2YuRPAt5suYBfS7qdrDgQBqXmv1EJ5dLfkhfC1Y3T622rI3g/exec",
-  clientToken:       "schicchat_client_2026-12544455",
+  clientToken:       "PUBLIC_SCHICGIRL_CLIENT_FORM",
   leadStorageKey:    "schicchat_coach_leads",
   settingsStorageKey:"schicchat_coach_settings",
   enableOneUse:      true,
   usedStorageKey:    "schicchat_used_once"
 };
 
-// ─── DOM refs ────────────────────────────────────────────────────────────────
-const chatBox     = document.getElementById("chatBox");
-const quickR      = document.getElementById("quickReplies");
-const chatForm    = document.getElementById("chatForm");
-const userInput   = document.getElementById("userInput");
-const resetBtn    = document.getElementById("resetBtn");
-const progressFill= document.getElementById("progressFill");
+const chatBox      = document.getElementById("chatBox");
+const quickR       = document.getElementById("quickReplies");
+const chatForm     = document.getElementById("chatForm");
+const userInput    = document.getElementById("userInput");
+const sendBtn      = document.getElementById("sendBtn");
+const resetBtn     = document.getElementById("resetBtn");
+const progressFill = document.getElementById("progressFill");
 
-// ─── State ───────────────────────────────────────────────────────────────────
 const state = {
   step:"", name:"", contact:"", country:"", climate:"", mainProblem:"",
   texture:"", thickness:"", density:"", lastHydration:"", washFrequency:"",
   routine:"", breakage:"", porosity:"", scalp:"", styles:"", detangling:"",
   products:"", buildup:"", heat:"", water:"", foodProtein:"", stressSleep:"",
-  goal:"", timeAvailable:"", score:0, profile:"", priority:"", offer:"",
-  redFlags:[]
+  goal:"", timeAvailable:"", score:0, profile:"", priority:"", offer:"", redFlags:[]
 };
 
 const STEPS = [
@@ -525,15 +398,34 @@ const STEPS = [
   "ask_food","ask_stress","ask_goal","ask_time","done"
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+let isBusy = false;
+let teaserShown = false;
+
 function norm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim(); }
+function safeText(t){ return String(t||"").replace(/[<>]/g, "").slice(0, 500); }
 function getSettings(){
-  const s = localStorage.getItem(CONFIG.settingsStorageKey);
-  return s ? JSON.parse(s) : { shopLink:CONFIG.shopLink, premiumLink:CONFIG.premiumLink, customFinal:CONFIG.customFinal };
+  try {
+    const s = localStorage.getItem(CONFIG.settingsStorageKey);
+    return s ? JSON.parse(s) : { shopLink:CONFIG.shopLink, premiumLink:CONFIG.premiumLink, customFinal:CONFIG.customFinal };
+  } catch(e) {
+    return { shopLink:CONFIG.shopLink, premiumLink:CONFIG.premiumLink, customFinal:CONFIG.customFinal };
+  }
 }
 function oneUseEnabled(){ return CONFIG.enableOneUse===true; }
 function hasUsed(){ return oneUseEnabled() && localStorage.getItem(CONFIG.usedStorageKey)==="true"; }
 function markUsed(){ if(oneUseEnabled()) localStorage.setItem(CONFIG.usedStorageKey,"true"); }
+function trackEvent(name, data={}){
+  if(window.fbq) fbq('trackCustom', name, data);
+  if(window.gtag) gtag('event', name, data);
+  console.log("Schicgirl event:", name, data);
+}
+
+function setBusy(v){
+  isBusy = v;
+  userInput.disabled = v;
+  sendBtn.disabled = v;
+  Array.from(quickR.querySelectorAll("button")).forEach(b=>b.disabled=v);
+}
 
 function setStep(s){
   state.step = s;
@@ -545,6 +437,7 @@ function setReplies(arr){
   quickR.innerHTML = "";
   (arr||[]).forEach(r=>{
     const b = document.createElement("button");
+    b.type = "button";
     b.className = "quick-btn";
     b.textContent = r.label;
     b.onclick = ()=>handleReply(r.value, r.label);
@@ -559,9 +452,9 @@ function resetState(){
     else state[k]="";
   });
   state.redFlags=[];
+  teaserShown = false;
 }
 
-// ─── Typing indicator ────────────────────────────────────────────────────────
 function showTyping(){
   const d = document.createElement("div");
   d.className = "typing-indicator";
@@ -569,15 +462,9 @@ function showTyping(){
   d.innerHTML = `<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>`;
   chatBox.appendChild(d);
   chatBox.scrollTop = chatBox.scrollHeight;
-  return d;
 }
+function removeTyping(){ const d = document.getElementById("typingDot"); if(d) d.remove(); }
 
-function removeTyping(){
-  const d = document.getElementById("typingDot");
-  if(d) d.remove();
-}
-
-// ─── Add message ─────────────────────────────────────────────────────────────
 function addMsg(text, sender="bot", isHtml=false, delay=0){
   return new Promise(res=>{
     setTimeout(()=>{
@@ -590,354 +477,223 @@ function addMsg(text, sender="bot", isHtml=false, delay=0){
       if(sender==="result"){
         d.className="msg result";
         setTimeout(()=>d.scrollIntoView({behavior:"smooth",block:"start"}),60);
-      } else {
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
+      } else chatBox.scrollTop = chatBox.scrollHeight;
       res();
     }, delay);
   });
 }
+async function botSay(text, delay=520, isHtml=false){ showTyping(); await addMsg(text, "bot", isHtml, delay); }
 
-async function botSay(text, delay=520, isHtml=false){
-  showTyping();
-  await addMsg(text, "bot", isHtml, delay);
-}
-
-// ─── Start ───────────────────────────────────────────────────────────────────
 function startChat(){
   if(hasUsed()){ showUsedScreen(); return; }
+  trackEvent("diagnostic_started");
   chatForm.style.display = "flex";
   quickR.style.display = "flex";
-  resetState();
-  chatBox.innerHTML = "";
-  setReplies([]);
-  setStep("ask_name");
+  resetState(); chatBox.innerHTML = ""; setReplies([]); setStep("ask_name");
   resetBtn.classList.remove("visible");
-
   addMsg("💛 Bienvenue chez Schicgirl. Je suis SchicChat, ton coach capillaire virtuel.", "bot");
   setTimeout(()=>{
-    botSay(
-      "Je vais analyser tes cheveux de façon approfondie : hydratation, porosité, casse, cuir chevelu, climat, routine, alimentation et habitudes de vie.\n\nÀ la fin, tu recevras un diagnostic détaillé, une routine personnalisée étape par étape, et un plan d'action pour les 7 prochains jours.\n\nPremière question : comment souhaites-tu que je t'appelle ?",
-      700
-    );
+    botSay("Je vais analyser tes cheveux avec douceur : hydratation, porosité, casse, cuir chevelu, climat, routine, alimentation et habitudes de vie.\n\nÀ la fin, tu recevras une première direction claire. Le rapport premium, lui, t'aidera à transformer cette direction en routine complète et personnalisée.\n\nPremière question : comment souhaites-tu que je t'appelle ?", 700);
   }, 200);
 }
 
 function showUsedScreen(){
   const s = getSettings();
-  chatBox.innerHTML = "";
-  setReplies([]);
-  progressFill.style.width = "100%";
-  chatForm.style.display = "none";
-  quickR.style.display = "none";
+  chatBox.innerHTML = ""; setReplies([]); progressFill.style.width = "100%";
+  chatForm.style.display = "none"; quickR.style.display = "none";
   chatBox.innerHTML = `
     <div class="used-screen">
       <h2>Diagnostic déjà utilisé 💛</h2>
       <p>Tu as déjà bénéficié de ton diagnostic capillaire gratuit Schicgirl.</p>
-      <p>Pour aller encore plus loin dans ta transformation, découvre nos offres spécialisées :</p>
-      <p><a href="${s.shopLink}" target="_blank">💧 Guide Hydratation Cheveux Crépus</a></p>
-      <p><a href="${s.premiumLink}" target="_blank">🌿 Diagnostic Capillaire Personnalisé (Premium)</a></p>
+      <p>Pour aller plus loin, découvre nos offres spécialisées :</p>
+      <p><a href="${s.shopLink}" target="_blank" rel="noopener">💧 Guide Hydratation Cheveux Crépus</a></p>
+      <p><a href="${s.premiumLink}" target="_blank" rel="noopener">🌿 Diagnostic Capillaire Personnalisé Premium</a></p>
+      <p style="font-size:12px;margin-top:14px">Astuce test admin : pour retester, vide le localStorage du navigateur.</p>
     </div>`;
 }
 
-// ─── Handle reply ─────────────────────────────────────────────────────────────
-async function handleReply(value, label=value){
-  const raw = String(value).trim();
-  const inp = norm(raw);
-  addMsg(label, "user");
-  setReplies([]);
-  userInput.value = "";
-
-  switch(state.step){
-
-    case "ask_name":
-      state.name = raw;
-      setStep("ask_contact");
-      await botSay(`Ravie de te rencontrer, ${state.name} 💛\n\nSi tu le souhaites, tu peux me laisser ton adresse e-mail ou ton numéro WhatsApp afin de sauvegarder ton diagnostic. Tu peux aussi continuer sans partager tes coordonnées.`);
-      setReplies([{label:"Continuer sans contact",value:"skip"}]);
-      break;
-
-    case "ask_contact":
-      state.contact = inp==="skip" ? "" : raw;
-      setStep("ask_country");
-      await botSay("Dans quel pays vis-tu ? Cela me permettra d'adapter mes conseils au climat local et aux produits disponibles près de chez toi.");
-      setReplies([
-        {label:"France",value:"france"},
-        {label:"Côte d'Ivoire",value:"cote_ivoire"},
-        {label:"Canada",value:"canada"},
-        {label:"États-Unis",value:"usa"},
-        {label:"Autre",value:"autre"}
-      ]);
-      break;
-
-    case "ask_country":
-      state.country = raw;
-      setStep("ask_climate");
-      await botSay("Comment décririais-tu le climat où tu vis ?");
-      setReplies([
-        {label:"Chaud et sec",value:"hot_dry"},
-        {label:"Chaud et humide / tropical",value:"humid"},
-        {label:"Froid ou hivernal",value:"cold"},
-        {label:"Variable selon les saisons",value:"variable"}
-      ]);
-      break;
-
-    case "ask_climate":
-      state.climate = inp;
-      setStep("ask_problem");
-      await botSay("Quelle est la chose qui te frustre le plus avec tes cheveux en ce moment ?");
-      setReplies([
-        {label:"Sécheresse persistante",value:"dryness"},
-        {label:"Pousse qui n'avance pas",value:"growth"},
-        {label:"Casse fréquente",value:"breakage"},
-        {label:"Chute ou tempes clairsemées",value:"hairloss"},
-        {label:"Je me sens perdue",value:"lost"}
-      ]);
-      break;
-
-    case "ask_problem":
-      state.mainProblem = inp;
-      setStep("ask_texture");
-      await botSay("Quelle est ta texture capillaire dominante ?");
-      setReplies([
-        {label:"4A — boucles serrées",value:"4a"},
-        {label:"4B — zigzag prononcé",value:"4b"},
-        {label:"4C — coils très serrés",value:"4c"},
-        {label:"Texture mixte",value:"mixed_texture"},
-        {label:"Je ne sais pas encore",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_texture":
-      state.texture = inp;
-      setStep("ask_thickness");
-      await botSay("Si tu prends une seule mèche entre tes doigts, elle te semble :");
-      setReplies([
-        {label:"Fine, presque invisible",value:"fine"},
-        {label:"Moyenne",value:"medium"},
-        {label:"Épaisse et dense",value:"thick"},
-        {label:"Je ne suis pas certaine",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_thickness":
-      state.thickness = inp;
-      setStep("ask_density");
-      await botSay("Et la densité globale de ta chevelure — c'est-à-dire le nombre de cheveux sur ta tête — est plutôt :");
-      setReplies([
-        {label:"Faible — on voit facilement le cuir chevelu",value:"low_density"},
-        {label:"Moyenne",value:"medium_density"},
-        {label:"Forte — cheveux très fournis",value:"high_density"},
-        {label:"Je ne sais pas",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_density":
-      state.density = inp;
-      setStep("ask_hydration");
-      await botSay("À quand remonte ta dernière hydratation complète — leave-in, masque ou soin en profondeur ?");
-      setReplies([
-        {label:"Aujourd'hui ou hier",value:"today"},
-        {label:"Il y a 2 à 3 jours",value:"2_3_days"},
-        {label:"Il y a plus d'une semaine",value:"week_plus"},
-        {label:"Je ne me souviens plus",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_hydration":
-      state.lastHydration = inp;
-      setStep("ask_wash");
-      await botSay("À quelle fréquence laves-tu réellement tes cheveux (shampooing ou co-wash) ?");
-      setReplies([
-        {label:"Une fois par semaine",value:"weekly"},
-        {label:"Toutes les deux semaines",value:"two_weeks"},
-        {label:"Toutes les 3 à 4 semaines",value:"monthly"},
-        {label:"Rarement ou de façon irrégulière",value:"rare"}
-      ]);
-      break;
-
-    case "ask_wash":
-      state.washFrequency = inp;
-      setStep("ask_routine");
-      await botSay("As-tu une routine capillaire claire et que tu suis régulièrement ?");
-      setReplies([
-        {label:"Oui, une routine stable",value:"regular"},
-        {label:"Un peu, mais pas toujours",value:"unstable"},
-        {label:"Non, pas vraiment",value:"none"}
-      ]);
-      break;
-
-    case "ask_routine":
-      state.routine = inp;
-      setStep("ask_breakage");
-      await botSay("Quand tu manipules tes cheveux — au démêlage, au coiffage — est-ce qu'ils cassent ?");
-      setReplies([
-        {label:"Oui, beaucoup",value:"high"},
-        {label:"Un peu, parfois",value:"medium"},
-        {label:"Non, rarement",value:"low"}
-      ]);
-      break;
-
-    case "ask_breakage":
-      state.breakage = inp;
-      setStep("ask_porosity");
-      await botSay("Quand tu mouilles tes cheveux avec de l'eau, que se passe-t-il ?");
-      setReplies([
-        {label:"L'eau glisse et reste en surface",value:"low_porosity"},
-        {label:"Elle est absorbée normalement",value:"normal_porosity"},
-        {label:"Elle est absorbée très vite, puis les cheveux sèchent rapidement",value:"high_porosity"},
-        {label:"Je n'ai jamais fait attention",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_porosity":
-      state.porosity = inp;
-      setStep("ask_scalp");
-      await botSay("Comment est ton cuir chevelu la plupart du temps ?");
-      setReplies([
-        {label:"Sec ou qui tire",value:"dry_scalp"},
-        {label:"Gras ou qui brille vite",value:"oily_scalp"},
-        {label:"Irrité, qui démange",value:"irritated"},
-        {label:"Normal, sans problème particulier",value:"normal"}
-      ]);
-      break;
-
-    case "ask_scalp":
-      state.scalp = inp;
-      setStep("ask_styles");
-      await botSay("Quel type de coiffure portes-tu le plus souvent ?");
-      setReplies([
-        {label:"Coiffures protectrices (vanilles, tresses…)",value:"protective"},
-        {label:"Cheveux libres ou afro",value:"loose"},
-        {label:"Styles très serrés ou collés",value:"tight"},
-        {label:"Un mélange selon les jours",value:"mixed"}
-      ]);
-      break;
-
-    case "ask_styles":
-      state.styles = inp;
-      setStep("ask_detangling");
-      await botSay("Comment démêles-tu tes cheveux habituellement ?");
-      setReplies([
-        {label:"Avec soin, en sections et avec un produit",value:"gentle_product"},
-        {label:"Parfois à sec ou sans produit",value:"sometimes_dry"},
-        {label:"Souvent à sec",value:"often_dry"},
-        {label:"Je ne maîtrise pas encore bien",value:"unsure"}
-      ]);
-      break;
-
-    case "ask_detangling":
-      state.detangling = inp;
-      setStep("ask_products");
-      await botSay("Les produits que tu utilises actuellement, quel résultat te donnent-ils ?");
-      setReplies([
-        {label:"Mes cheveux les adorent",value:"works"},
-        {label:"Ça marche, mais pas toujours",value:"sometimes"},
-        {label:"Trop lourds ou trop gras",value:"too_heavy"},
-        {label:"Aucun résultat notable",value:"no_result"}
-      ]);
-      break;
-
-    case "ask_products":
-      state.products = inp;
-      setStep("ask_buildup");
-      await botSay("Après ton lavage et ton soin, tes cheveux sont en général :");
-      setReplies([
-        {label:"Légers, propres et souples",value:"clean"},
-        {label:"Lourds ou comme enrobés",value:"heavy"},
-        {label:"Encore secs malgré le soin",value:"still_dry"},
-        {label:"Je ne sais pas vraiment",value:"unknown"}
-      ]);
-      break;
-
-    case "ask_buildup":
-      state.buildup = inp;
-      setStep("ask_heat");
-      await botSay("Utilises-tu des outils chauffants — sèche-cheveux chaud, lisseur, fer à friser ?");
-      setReplies([
-        {label:"Oui, régulièrement",value:"often"},
-        {label:"Parfois, de temps en temps",value:"sometimes"},
-        {label:"Rarement ou jamais",value:"rare"}
-      ]);
-      break;
-
-    case "ask_heat":
-      state.heat = inp;
-      setStep("ask_water");
-      await botSay("Comment évalues-tu ton hydratation interne — ton apport en eau ?");
-      setReplies([
-        {label:"Je bois suffisamment d'eau",value:"enough"},
-        {label:"Pas assez, souvent",value:"low"},
-        {label:"Cela varie beaucoup",value:"variable"}
-      ]);
-      break;
-
-    case "ask_water":
-      state.water = inp;
-      setStep("ask_food");
-      await botSay("Consommes-tu régulièrement des aliments riches en protéines ? (œufs, poisson, viande, légumineuses, yaourt…)");
-      setReplies([
-        {label:"Oui, c'est régulier",value:"regular"},
-        {label:"Parfois",value:"sometimes"},
-        {label:"Rarement",value:"rare"}
-      ]);
-      break;
-
-    case "ask_food":
-      state.foodProtein = inp;
-      setStep("ask_stress");
-      await botSay("Ces dernières semaines, comment décris-tu ton niveau de stress et la qualité de ton sommeil ?");
-      setReplies([
-        {label:"Tout va bien, je suis stable",value:"stable"},
-        {label:"Un stress modéré, sommeil correct",value:"medium_stress"},
-        {label:"Beaucoup de stress ou peu de sommeil",value:"high_stress"}
-      ]);
-      break;
-
-    case "ask_stress":
-      state.stressSleep = inp;
-      setStep("ask_goal");
-      await botSay("Et pour finir, quel est ton objectif principal avec tes cheveux en ce moment ?");
-      setReplies([
-        {label:"Mieux hydrater",value:"hydration"},
-        {label:"Gagner en longueur",value:"length"},
-        {label:"Plus de volume",value:"volume"},
-        {label:"Soigner mes tempes",value:"edges"},
-        {label:"Simplifier ma routine",value:"simple_routine"}
-      ]);
-      break;
-
-    case "ask_goal":
-      state.goal = inp;
-      setStep("ask_time");
-      await botSay("Dernière question — combien de temps peux-tu vraiment consacrer à tes cheveux chaque semaine ?");
-      setReplies([
-        {label:"Moins de 30 minutes",value:"low_time"},
-        {label:"Entre 30 minutes et 1 heure",value:"medium_time"},
-        {label:"Plus d'une heure",value:"high_time"}
-      ]);
-      break;
-
-    case "ask_time":
-      state.timeAvailable = inp;
-      buildDiagnosis();
-      break;
-
-    case "done":
-      const sets = getSettings();
-      if(inp==="shop") window.open(sets.shopLink,"_blank");
-      if(inp==="premium") window.open(sets.premiumLink,"_blank");
-      if(inp==="restart") startChat();
-      break;
+async function maybeShowTeaser(){
+  if(teaserShown) return;
+  const idx = STEPS.indexOf(state.step);
+  if(idx >= 8){
+    teaserShown = true;
+    await botSay(`<div class="teaser-card"><strong>Je commence déjà à détecter des pistes importantes… 👀</strong><br><br>À la fin, je te donnerai une première direction gratuite. Pour obtenir la routine complète adaptée à ton profil exact, tu pourras choisir le diagnostic premium Schicgirl.</div>`, 520, true);
   }
 }
 
-// ─── Lead saving ──────────────────────────────────────────────────────────────
+async function handleReply(value, label=value){
+  if(isBusy) return;
+  setBusy(true);
+  const raw = safeText(value).trim();
+  const shown = safeText(label).trim();
+  const inp = norm(raw);
+  addMsg(shown, "user");
+  setReplies([]); userInput.value = "";
+
+  try {
+    switch(state.step){
+      case "ask_name":
+        state.name = raw || "Ma belle";
+        setStep("ask_contact");
+        await botSay(`Ravie de te rencontrer, ${state.name} 💛\n\nSi tu le souhaites, laisse ton e-mail ou WhatsApp pour sauvegarder ton diagnostic. Tu peux aussi continuer sans partager tes coordonnées.`);
+        setReplies([{label:"Continuer sans contact",value:"skip"}]);
+        break;
+      case "ask_contact":
+        state.contact = inp==="skip" ? "" : raw;
+        setStep("ask_country");
+        await botSay("Dans quel pays vis-tu ? Cela me permettra d'adapter mes conseils au climat local et aux produits disponibles près de chez toi.");
+        setReplies([{label:"France",value:"france"},{label:"Côte d'Ivoire",value:"cote_ivoire"},{label:"Canada",value:"canada"},{label:"États-Unis",value:"usa"},{label:"Autre",value:"autre"}]);
+        break;
+      case "ask_country":
+        state.country = raw;
+        setStep("ask_climate");
+        await botSay("Comment décrirais-tu le climat où tu vis ?");
+        setReplies([{label:"Chaud et sec",value:"hot_dry"},{label:"Chaud et humide / tropical",value:"humid"},{label:"Froid ou hivernal",value:"cold"},{label:"Variable selon les saisons",value:"variable"}]);
+        break;
+      case "ask_climate":
+        state.climate = inp;
+        setStep("ask_problem");
+        await botSay("Quelle est la chose qui te frustre le plus avec tes cheveux en ce moment ?");
+        setReplies([{label:"Sécheresse persistante",value:"dryness"},{label:"Pousse qui n'avance pas",value:"growth"},{label:"Casse fréquente",value:"breakage"},{label:"Chute ou tempes clairsemées",value:"hairloss"},{label:"Je me sens perdue",value:"lost"}]);
+        break;
+      case "ask_problem":
+        state.mainProblem = inp;
+        setStep("ask_texture");
+        await botSay("Quelle est ta texture capillaire dominante ?");
+        setReplies([{label:"4A — boucles serrées",value:"4a"},{label:"4B — zigzag prononcé",value:"4b"},{label:"4C — coils très serrés",value:"4c"},{label:"Texture mixte",value:"mixed_texture"},{label:"Je ne sais pas encore",value:"unknown"}]);
+        break;
+      case "ask_texture":
+        state.texture = inp;
+        setStep("ask_thickness");
+        await botSay("Si tu prends une seule mèche entre tes doigts, elle te semble :");
+        setReplies([{label:"Fine, presque invisible",value:"fine"},{label:"Moyenne",value:"medium"},{label:"Épaisse",value:"thick"},{label:"Je ne suis pas certaine",value:"unknown"}]);
+        break;
+      case "ask_thickness":
+        state.thickness = inp;
+        setStep("ask_density");
+        await botSay("Et la densité globale de ta chevelure est plutôt :");
+        setReplies([{label:"Faible — on voit facilement le cuir chevelu",value:"low_density"},{label:"Moyenne",value:"medium_density"},{label:"Forte — cheveux très fournis",value:"high_density"},{label:"Je ne sais pas",value:"unknown"}]);
+        break;
+      case "ask_density":
+        state.density = inp;
+        setStep("ask_hydration");
+        await maybeShowTeaser();
+        await botSay("À quand remonte ta dernière hydratation complète — leave-in, masque ou soin en profondeur ?");
+        setReplies([{label:"Aujourd'hui ou hier",value:"today"},{label:"Il y a 2 à 3 jours",value:"2_3_days"},{label:"Il y a plus d'une semaine",value:"week_plus"},{label:"Je ne me souviens plus",value:"unknown"}]);
+        break;
+      case "ask_hydration":
+        state.lastHydration = inp;
+        setStep("ask_wash");
+        await botSay("À quelle fréquence laves-tu réellement tes cheveux — shampooing ou co-wash ?");
+        setReplies([{label:"Une fois par semaine",value:"weekly"},{label:"Toutes les deux semaines",value:"two_weeks"},{label:"Toutes les 3 à 4 semaines",value:"monthly"},{label:"Rarement ou irrégulièrement",value:"rare"}]);
+        break;
+      case "ask_wash":
+        state.washFrequency = inp;
+        setStep("ask_routine");
+        await botSay("As-tu une routine capillaire claire et que tu suis régulièrement ?");
+        setReplies([{label:"Oui, une routine stable",value:"regular"},{label:"Un peu, mais pas toujours",value:"unstable"},{label:"Non, pas vraiment",value:"none"}]);
+        break;
+      case "ask_routine":
+        state.routine = inp;
+        setStep("ask_breakage");
+        await botSay("Quand tu manipules tes cheveux — au démêlage ou au coiffage — est-ce qu'ils cassent ?");
+        setReplies([{label:"Oui, beaucoup",value:"high"},{label:"Un peu, parfois",value:"medium"},{label:"Non, rarement",value:"low"}]);
+        break;
+      case "ask_breakage":
+        state.breakage = inp;
+        setStep("ask_porosity");
+        await botSay("Quand tu mouilles tes cheveux avec de l'eau, que se passe-t-il ?");
+        setReplies([{label:"L'eau glisse et reste en surface",value:"low_porosity"},{label:"Elle est absorbée normalement",value:"normal_porosity"},{label:"Elle est absorbée très vite puis sèche vite",value:"high_porosity"},{label:"Je n'ai jamais fait attention",value:"unknown"}]);
+        break;
+      case "ask_porosity":
+        state.porosity = inp;
+        setStep("ask_scalp");
+        await botSay("Comment est ton cuir chevelu la plupart du temps ?");
+        setReplies([{label:"Sec ou qui tire",value:"dry_scalp"},{label:"Gras ou qui brille vite",value:"oily_scalp"},{label:"Irrité, qui démange",value:"irritated"},{label:"Normal",value:"normal"}]);
+        break;
+      case "ask_scalp":
+        state.scalp = inp;
+        setStep("ask_styles");
+        await botSay("Quel type de coiffure portes-tu le plus souvent ?");
+        setReplies([{label:"Coiffures protectrices",value:"protective"},{label:"Cheveux libres ou afro",value:"loose"},{label:"Styles très serrés ou collés",value:"tight"},{label:"Un mélange selon les jours",value:"mixed"}]);
+        break;
+      case "ask_styles":
+        state.styles = inp;
+        setStep("ask_detangling");
+        await botSay("Comment démêles-tu tes cheveux habituellement ?");
+        setReplies([{label:"En sections avec un produit",value:"gentle_product"},{label:"Parfois à sec ou sans produit",value:"sometimes_dry"},{label:"Souvent à sec",value:"often_dry"},{label:"Je ne maîtrise pas encore",value:"unsure"}]);
+        break;
+      case "ask_detangling":
+        state.detangling = inp;
+        setStep("ask_products");
+        await botSay("Les produits que tu utilises actuellement, quel résultat te donnent-ils ?");
+        setReplies([{label:"Mes cheveux les adorent",value:"works"},{label:"Ça marche, mais pas toujours",value:"sometimes"},{label:"Trop lourds ou trop gras",value:"too_heavy"},{label:"Aucun résultat notable",value:"no_result"}]);
+        break;
+      case "ask_products":
+        state.products = inp;
+        setStep("ask_buildup");
+        await botSay("Après ton lavage et ton soin, tes cheveux sont en général :");
+        setReplies([{label:"Légers, propres et souples",value:"clean"},{label:"Lourds ou comme enrobés",value:"heavy"},{label:"Encore secs malgré le soin",value:"still_dry"},{label:"Je ne sais pas vraiment",value:"unknown"}]);
+        break;
+      case "ask_buildup":
+        state.buildup = inp;
+        setStep("ask_heat");
+        await botSay("Utilises-tu des outils chauffants — sèche-cheveux chaud, lisseur, fer à friser ?");
+        setReplies([{label:"Oui, régulièrement",value:"often"},{label:"Parfois",value:"sometimes"},{label:"Rarement ou jamais",value:"rare"}]);
+        break;
+      case "ask_heat":
+        state.heat = inp;
+        setStep("ask_water");
+        await botSay("Comment évalues-tu ton hydratation interne — ton apport en eau ?");
+        setReplies([{label:"Je bois suffisamment d'eau",value:"enough"},{label:"Pas assez, souvent",value:"low"},{label:"Cela varie beaucoup",value:"variable"}]);
+        break;
+      case "ask_water":
+        state.water = inp;
+        setStep("ask_food");
+        await botSay("Consommes-tu régulièrement des aliments riches en protéines ?");
+        setReplies([{label:"Oui, c'est régulier",value:"regular"},{label:"Parfois",value:"sometimes"},{label:"Rarement",value:"rare"}]);
+        break;
+      case "ask_food":
+        state.foodProtein = inp;
+        setStep("ask_stress");
+        await botSay("Ces dernières semaines, comment décris-tu ton stress et ton sommeil ?");
+        setReplies([{label:"Stable",value:"stable"},{label:"Stress modéré, sommeil correct",value:"medium_stress"},{label:"Beaucoup de stress ou peu de sommeil",value:"high_stress"}]);
+        break;
+      case "ask_stress":
+        state.stressSleep = inp;
+        setStep("ask_goal");
+        await botSay("Et pour finir, quel est ton objectif principal avec tes cheveux en ce moment ?");
+        setReplies([{label:"Mieux hydrater",value:"hydration"},{label:"Gagner en longueur",value:"length"},{label:"Plus de volume",value:"volume"},{label:"Soigner mes tempes",value:"edges"},{label:"Simplifier ma routine",value:"simple_routine"}]);
+        break;
+      case "ask_goal":
+        state.goal = inp;
+        setStep("ask_time");
+        await botSay("Dernière question — combien de temps peux-tu vraiment consacrer à tes cheveux chaque semaine ?");
+        setReplies([{label:"Moins de 30 minutes",value:"low_time"},{label:"Entre 30 minutes et 1 heure",value:"medium_time"},{label:"Plus d'une heure",value:"high_time"}]);
+        break;
+      case "ask_time":
+        state.timeAvailable = inp;
+        await buildDiagnosis();
+        break;
+      case "done":
+        const sets = getSettings();
+        if(inp==="shop"){ trackEvent("click_hydration_guide"); window.open(sets.shopLink,"_blank","noopener"); }
+        if(inp==="premium"){ trackEvent("click_premium_diagnostic"); window.open(sets.premiumLink,"_blank","noopener"); }
+        if(inp==="restart") startChat();
+        break;
+    }
+  } finally {
+    setBusy(false);
+  }
+}
+
 function saveLead(){
-  const lead = {...state, date:new Date().toISOString()};
-  const leads = JSON.parse(localStorage.getItem(CONFIG.leadStorageKey)||"[]");
-  leads.push(lead);
-  localStorage.setItem(CONFIG.leadStorageKey, JSON.stringify(leads));
+  const lead = {...state, date:new Date().toISOString(), source:"schicgirl_diagnostic_frontend"};
+  try {
+    const leads = JSON.parse(localStorage.getItem(CONFIG.leadStorageKey)||"[]");
+    leads.push(lead);
+    localStorage.setItem(CONFIG.leadStorageKey, JSON.stringify(leads.slice(-50)));
+  } catch(e) {}
   if(!CONFIG.webAppUrl || CONFIG.webAppUrl.includes("PASTE")) return;
   const p = new URLSearchParams();
   p.append("action","saveLead");
@@ -946,369 +702,155 @@ function saveLead(){
   fetch(CONFIG.webAppUrl,{method:"POST",body:p}).catch(()=>{});
 }
 
-// ─── Analysis ─────────────────────────────────────────────────────────────────
 function porosityNote(){
-  if(state.porosity==="low_porosity")   return "Porosité faible : applique toujours sur cheveux humides, en petites sections, idéalement sous une chaleur douce. Évite de superposer plusieurs produits épais.";
-  if(state.porosity==="high_porosity")  return "Porosité élevée : hydrate puis scelle sans tarder pour retenir l'eau. Privilégie les leave-ins crémeux et les huiles légères en scellage.";
-  if(state.porosity==="normal_porosity")return "Porosité normale : maintiens un équilibre simple entre hydratation, nutrition et protection. Observe la souplesse de tes cheveux et ajuste si nécessaire.";
-  return "Porosité non déterminée : commence avec des produits légers, observe la réaction et affine au fil des semaines.";
+  if(state.porosity==="low_porosity") return "Porosité faible : applique sur cheveux humides, en petites sections, idéalement sous chaleur douce. Évite de superposer plusieurs produits épais.";
+  if(state.porosity==="high_porosity") return "Porosité élevée : hydrate puis scelle rapidement pour retenir l'eau. Privilégie les leave-ins crémeux et les huiles légères en finition.";
+  if(state.porosity==="normal_porosity") return "Porosité normale : maintiens un équilibre entre hydratation, nutrition et protection. Observe surtout la souplesse.";
+  return "Porosité non déterminée : commence avec des produits légers, observe la réaction et ajuste au fil des semaines.";
 }
-
 function porosityInsight(){
-  if(state.porosity==="low_porosity")   return "Tes cheveux ont une porosité faible — ils mettent du temps à absorber les soins. La solution n'est pas d'utiliser plus de produit, mais de mieux préparer l'absorption : cheveux humides, chaleur douce, petites sections.";
-  if(state.porosity==="high_porosity")  return "Tes cheveux ont une porosité élevée — ils absorbent vite mais perdent l'eau tout aussi rapidement. Hydrater et sceller rapidement, en insistant sur les pointes, est essentiel pour toi.";
-  if(state.porosity==="normal_porosity")return "Ta porosité est équilibrée — une routine cohérente et régulière suffit. Surveille surtout la souplesse après deux semaines de pratique.";
-  return "Ta porosité reste à identifier. Si l'eau glisse sur tes cheveux, pense faible porosité. Si elle est absorbée puis que les cheveux sèchent vite, c'est plutôt une porosité élevée.";
+  if(state.porosity==="low_porosity") return "Tes cheveux semblent avoir une porosité faible : ils ont besoin d'aide pour absorber les soins, pas forcément de plus de produit.";
+  if(state.porosity==="high_porosity") return "Tes cheveux semblent avoir une porosité élevée : ils absorbent vite mais perdent l'eau rapidement. La rétention est ta priorité.";
+  if(state.porosity==="normal_porosity") return "Ta porosité semble équilibrée : une routine cohérente et régulière peut déjà beaucoup changer les résultats.";
+  return "Ta porosité reste à identifier : observe comment tes cheveux réagissent à l'eau et aux soins pendant 2 semaines.";
 }
-
 function climateNote(){
-  if(state.climate==="hot_dry") return "Ton climat chaud et sec peut déshydrater tes cheveux rapidement. Scelle bien après chaque soin et protège tes pointes des expositions prolongées.";
-  if(state.climate==="humid")   return "Un climat humide et tropical peut gonfler la fibre ou faire rétrécir les cheveux. Une routine légère avec des coiffures souples aide à garder le contrôle sans alourdir.";
-  if(state.climate==="cold")    return "Le froid rend les cheveux plus secs et fragiles. Évite de sortir les cheveux mouillés et renforce la protection nocturne.";
-  return "Ton climat variable demande une routine adaptable : allège en saison humide, renforce l'hydratation et le scellage en saison sèche ou froide.";
+  if(state.climate==="hot_dry") return "Ton climat chaud et sec peut accélérer la sécheresse : scellage et protection des pointes sont essentiels.";
+  if(state.climate==="humid") return "Un climat humide peut accentuer le shrinkage et le gonflement : une routine légère et des coiffures souples aident beaucoup.";
+  if(state.climate==="cold") return "Le froid fragilise souvent les cheveux : évite de sortir les cheveux mouillés et protège-les la nuit.";
+  return "Ton climat variable demande une routine adaptable selon la saison.";
 }
-
 function textureNote(){
   const parts=[];
-  if(state.texture==="4c") parts.push("Texture 4C : travaille systématiquement par sections. Le sébum a du mal à descendre jusqu'aux longueurs, donc les pointes réclament une attention particulière.");
-  if(state.texture==="4b") parts.push("Texture 4B : les angles et les zigzags favorisent les nœuds. Un démêlage doux et méthodique est indispensable.");
-  if(state.texture==="4a") parts.push("Texture 4A : les boucles peuvent paraître hydratées en surface alors que les pointes manquent de soin. Insiste sur l'ensemble de la longueur.");
-  if(state.thickness==="fine") parts.push("Cheveux fins : utilise peu de produit à la fois et évite les beurres trop épais qui peuvent alourdir.");
-  if(state.thickness==="thick") parts.push("Cheveux épais : travaille en petites sections pour que le soin pénètre uniformément dans toute la masse.");
-  if(state.density==="low_density") parts.push("Densité faible : évite les coiffures trop volumineuses qui plaquent les racines. Privilégie des styles légers.");
-  if(state.density==="high_density") parts.push("Densité forte : le soin en sections n'est pas une option, c'est une nécessité pour laver, hydrater et démêler efficacement.");
+  if(state.texture==="4c") parts.push("Texture 4C : travaille par sections et insiste sur les pointes, car le sébum descend difficilement sur les longueurs.");
+  if(state.texture==="4b") parts.push("Texture 4B : les zigzags favorisent les nœuds. Le démêlage doux est très important.");
+  if(state.texture==="4a") parts.push("Texture 4A : les boucles peuvent paraître hydratées en surface, mais les pointes doivent quand même être protégées.");
+  if(state.thickness==="fine") parts.push("Cheveux fins : privilégie les textures légères et évite les beurres trop lourds.");
+  if(state.thickness==="thick") parts.push("Cheveux épais : applique les soins en petites sections pour toucher toute la masse.");
+  if(state.density==="low_density") parts.push("Densité faible : évite les coiffures trop serrées ou trop lourdes.");
+  if(state.density==="high_density") parts.push("Densité forte : le soin en sections est indispensable pour hydrater correctement.");
   return parts.join("\n\n") || "Ta texture mérite d'être observée semaine après semaine pour identifier ce qui lui convient vraiment.";
 }
-
 function buildupNote(){
-  if(state.buildup==="heavy")    return "Cheveux lourds après lavage : une clarification douce toutes les 4 à 6 semaines peut être nécessaire pour éliminer les résidus accumulés.";
-  if(state.buildup==="still_dry")return "Cheveux encore secs après le soin : cela peut indiquer un masque inadapté, un manque de scellage ou une porosité qui nécessite une approche différente.";
-  return "Après chaque lavage, observe le résultat : cheveux légers = routine correcte ; cheveux lourds = possible accumulation ; cheveux secs = soin ou scellage à ajuster.";
+  if(state.buildup==="heavy") return "Cheveux lourds après lavage : il peut y avoir une accumulation de produits. Une clarification douce toutes les 4 à 6 semaines peut aider.";
+  if(state.buildup==="still_dry") return "Cheveux encore secs après soin : ton masque, ton scellage ou ta méthode d'application doit probablement être ajusté.";
+  return "Observe le résultat après lavage : légèreté, souplesse et pointes moins rêches sont de bons signes.";
 }
-
 function lifestyleNote(){
   const parts=[];
-  if(state.water==="low")             parts.push("Hydratation interne : un faible apport en eau peut contribuer à des cheveux ternes et fragilisés. Vise au moins 1,5 L d'eau par jour.");
-  if(state.foodProtein==="rare")       parts.push("Alimentation : les protéines nourrissent la fibre capillaire de l'intérieur. Sans apport suffisant, les cheveux peuvent s'affaiblir progressivement.");
-  if(state.stressSleep==="high_stress")parts.push("Stress et sommeil : un niveau de stress élevé ou un manque de sommeil peuvent accélérer la chute, fragiliser la fibre et déséquilibrer le cuir chevelu.");
-  return parts.length ? parts.join("\n\n") : "Tes habitudes de vie semblent favorables. Maintiens-les — elles soutiennent ta santé capillaire de l'intérieur.";
+  if(state.water==="low") parts.push("Hydratation interne : boire peu d'eau peut contribuer à des cheveux ternes et fragilisés.");
+  if(state.foodProtein==="rare") parts.push("Alimentation : les protéines soutiennent la fibre capillaire de l'intérieur.");
+  if(state.stressSleep==="high_stress") parts.push("Stress et sommeil : ils peuvent influencer la chute, le cuir chevelu et la qualité de la fibre.");
+  return parts.length ? parts.join("\n\n") : "Tes habitudes de vie semblent plutôt favorables. Continue à soutenir tes cheveux de l'intérieur.";
 }
 
-function routineHydration(){
-  return `Objectif : réintroduire l'eau dans la fibre, la retenir et éviter que les cheveux redeviennent secs trop rapidement.
-
-1. Sectionner les cheveux
-Divise en 4 à 8 sections selon ta densité. L'objectif est de ne pas hydrater seulement la surface.
-
-2. Pré-hydratation
-Vaporise un mélange eau tiède + aloe vera (80/20). Les cheveux doivent être humides, pas détrempés. Presse doucement.
-
-3. Leave-in ou crème hydratante
-Applique une petite quantité par section, en partant des pointes vers les longueurs. Si les cheveux blanchissent, tu en mets trop.
-
-4. Scellage
-Une huile légère (jojoba, avocat, pépins de raisin) ou un beurre en fine couche sur les pointes. L'huile seule n'hydrate pas — elle retient l'eau déjà apportée.
-
-5. Masque hydratant
-Une fois par semaine ou toutes les deux semaines : masque hydratant, aloe vera, miel dilué ou yaourt au miel. Pose 20 à 30 minutes sous charlotte.
-
-6. Protection nocturne
-Bonnet ou taie d'oreiller en satin chaque nuit. Si les cheveux s'emmêlent vite, endors-toi avec 4 grosses vanilles.
-
-${porosityNote()}`;
-}
-
-function routineGrowth(){
-  return `Objectif : conserver la longueur que tes cheveux produisent déjà — la pousse est là, mais la rétention est le vrai enjeu.
-
-1. Protéger les pointes en priorité
-Leave-in + huile légère ou crème scellante sur les pointes. Coiffe en vanilles larges, tresses ou chignon souple.
-
-2. Hydrater les longueurs
-Spray eau + leave-in deux fois par semaine minimum si les cheveux sèchent vite. Cible les longueurs, pas seulement les racines.
-
-3. Réduire la manipulation
-Garde une coiffure 3 à 7 jours si possible. Ne recoiffe pas tous les jours. Démêle uniquement sur cheveux assouplis.
-
-4. Massage du cuir chevelu
-3 à 5 minutes, trois fois par semaine, avec les doigts propres (une goutte d'huile légère en option). Ne gratte pas avec les ongles.
-
-5. Soin profond régulier
-Masque hydratant si sécheresse, soin fortifiant doux si casse présente. Toujours terminer avec leave-in + scellage.
-
-6. Suivi réaliste
-Photo mensuelle dans les mêmes conditions. N'évalue pas la pousse jour après jour — observe sur 4 à 8 semaines.
-
-${porosityNote()}`;
-}
-
-function routineBreakage(){
-  return `Objectif : réduire la casse, renforcer doucement la fibre et garder les cheveux souples.
-
-1. Démêlage doux — sans exception
-Après-shampooing ou masque démêlant, 4 à 8 sections, des pointes vers les racines. Doigts d'abord, peigne à dents larges ensuite si nécessaire. Jamais à sec.
-
-2. Hydratation complète
-Eau ou leave-in + crème hydratante + huile légère, section par section, en insistant sur les zones fragiles.
-
-3. Soin fortifiant léger
-Masque protéiné doux une fois toutes les 3 à 4 semaines. Toujours faire suivre d'une hydratation. Si les cheveux deviennent durs ou secs après : trop de protéines, attends plus longtemps.
-
-4. Pointes abîmées
-Si elles sont fines, transparentes ou cassent en permanence : une micro-coupe s'impose. Pas besoin de couper beaucoup — juste de supprimer ce qui est trop fragilisé.
-
-5. Coiffures protectrices douces
-Vanilles larges, tresses amples, chignon bas. Évite les mèches trop lourdes et la manipulation quotidienne.
-
-6. Protection nocturne
-Satin obligatoire. Si les cheveux s'emmêlent la nuit, endors-toi avec de grosses vanilles.
-
-${porosityNote()}`;
-}
-
-function routineEdges(){
-  return `Objectif : protéger les tempes, réduire la tension et apaiser le cuir chevelu.
-
-1. Stopper toute tension — immédiatement
-Tresses serrées, chignons tirés, gel agressif, élastiques étroits : tout cela doit s'arrêter pendant 4 à 6 semaines minimum. La règle est simple : si ça tire, ce n'est pas protecteur.
-
-2. Hydratation légère des tempes
-Eau + aloe vera ou leave-in très léger, en petite quantité avec les doigts, 2 à 3 fois par semaine.
-
-3. Massage doux
-Pulpe des doigts, 2 à 3 minutes, 3 fois par semaine. Une goutte d'huile légère si le cuir chevelu l'accepte. Ne frotte pas fort.
-
-4. Coiffures recommandées
-Vanilles lâches, tresses larges, afro puff très doux, foulard en satin. Évite de plaquer les baby hairs tous les jours.
-
-5. Suivi patient
-Photo hebdomadaire. Observe sur 4 à 8 semaines — pas sur 2 jours.
-
-6. Quand consulter un professionnel
-Chute soudaine, plaques, douleur, démangeaisons intenses ou croûtes persistantes : ce ne sont plus des signaux à gérer seule.
-
-${porosityNote()}`;
-}
-
-function routineSimple(){
-  return `Objectif : sortir de la confusion, établir une routine claire avec peu de produits et beaucoup de régularité.
-
-Ce dont tu as besoin (et rien de plus)
-1 shampooing doux · 1 masque hydratant · 1 leave-in ou crème hydratante · 1 huile légère · 1 bonnet ou taie satin.
-
-Jour de soin — 1 à 2 fois par mois
-
-1. Shampooing doux : applique surtout sur le cuir chevelu, masse avec la pulpe des doigts. Laisse la mousse nettoyer les longueurs au rinçage — ne les frotte pas.
-
-2. Masque : hydratant si les cheveux sont secs, fortifiant doux de temps en temps si la casse est présente. 20 à 30 minutes, bien rincer.
-
-3. Hydratation : leave-in, lait ou crème hydratante sur cheveux humides, section par section, des pointes vers les longueurs.
-
-4. Scellage : huile légère ou beurre en petite quantité, principalement sur les pointes.
-
-5. Coiffure simple : vanilles, tresses, chignon doux, afro puff souple.
-
-Milieu de semaine
-Si les cheveux sèchent : un peu d'eau + leave-in + huile sur les pointes. Pas besoin de tout recommencer.
-
-Nuit
-Bonnet ou taie satin. Grosses vanilles si les cheveux s'emmêlent facilement.
-
-${porosityNote()}`;
-}
+function routineHydration(){ return `Objectif : réintroduire l'eau dans la fibre, la retenir et éviter que les cheveux redeviennent secs trop rapidement.\n\n1. Sectionne tes cheveux en 4 à 8 parties.\n2. Vaporise eau tiède + aloe vera. Les cheveux doivent être humides, pas trempés.\n3. Applique un leave-in ou une crème hydratante des pointes vers les longueurs.\n4. Scelle avec une huile légère ou une petite quantité de beurre sur les pointes.\n5. Fais un masque hydratant 1 fois par semaine ou toutes les 2 semaines.\n6. Protège la nuit avec satin.\n\n${porosityNote()}`; }
+function routineGrowth(){ return `Objectif : conserver la longueur que tes cheveux produisent déjà.\n\n1. Protège les pointes en priorité.\n2. Hydrate les longueurs 1 à 2 fois par semaine selon la sécheresse.\n3. Réduis la manipulation quotidienne.\n4. Masse le cuir chevelu 3 à 5 minutes, 3 fois par semaine.\n5. Fais un soin profond régulier.\n6. Suis ta progression avec une photo mensuelle.\n\n${porosityNote()}`; }
+function routineBreakage(){ return `Objectif : réduire la casse, renforcer doucement la fibre et garder les cheveux souples.\n\n1. Démêle toujours avec produit, en sections, des pointes vers les racines.\n2. Hydrate complètement : eau/leave-in + crème + scellage léger.\n3. Fais un soin fortifiant doux toutes les 3 à 4 semaines si nécessaire.\n4. Coupe légèrement les pointes très abîmées.\n5. Choisis des coiffures protectrices douces, jamais serrées.\n6. Protège tes cheveux chaque nuit avec satin.\n\n${porosityNote()}`; }
+function routineEdges(){ return `Objectif : protéger les tempes, réduire la tension et apaiser le cuir chevelu.\n\n1. Stoppe les tresses serrées, chignons tirés, gels agressifs et élastiques fins.\n2. Hydrate les tempes légèrement 2 à 3 fois par semaine.\n3. Masse doucement avec la pulpe des doigts, sans gratter.\n4. Choisis des coiffures lâches et légères.\n5. Suis avec une photo hebdomadaire.\n6. Consulte un professionnel si tu observes plaques, douleurs, croûtes ou chute soudaine.\n\n${porosityNote()}`; }
+function routineSimple(){ return `Objectif : sortir de la confusion et créer une routine claire avec peu de produits.\n\nProduits essentiels : shampooing doux, masque hydratant, leave-in/crème, huile légère, satin.\n\nJour de soin :\n1. Shampooing doux sur le cuir chevelu.\n2. Masque 20 à 30 minutes.\n3. Leave-in sur cheveux humides.\n4. Scellage léger sur les pointes.\n5. Coiffure simple et douce.\n\nMilieu de semaine : eau + leave-in + huile sur les pointes si besoin.\n\n${porosityNote()}`; }
 
 function recipes(){
   const arr=[];
-  if(state.porosity==="low_porosity"){
-    arr.push(`Masque hydratation légère — porosité faible\n2 c. à soupe d'aloe vera · 1 c. à café de miel · 1 c. à café d'huile de jojoba\nApplique sur cheveux propres et humides, pose 25 à 30 minutes sous une chaleur douce, puis rince.`);
-    arr.push(`Masque douceur sans lourdeur\n2 c. à soupe de yaourt nature · 1 c. à soupe de gel de lin · Quelques gouttes d'huile de pépins de raisin\nPose 20 minutes. Idéal si tes cheveux deviennent vite lourds.`);
-  } else if(state.porosity==="high_porosity"){
-    arr.push(`Masque hydratation + rétention — porosité élevée\n2 c. à soupe d'aloe vera · 1 c. à soupe de miel · 1 c. à soupe d'huile d'olive ou d'avocat\nPose 30 minutes, puis rince et scelle rapidement après ton leave-in.`);
-    arr.push(`Masque renforcement doux — casse\n2 c. à soupe de yaourt nature · 1 c. à café de miel · 1 c. à café d'huile de ricin\nPose 20 minutes. À faire 1 à 2 fois par mois si les cheveux cassent.`);
-  } else {
-    arr.push(`Masque équilibre\n2 c. à soupe de yaourt nature · 1 c. à café de miel · 1 c. à soupe d'huile d'amande douce ou d'olive\nPose 25 minutes. Fréquence : une fois par semaine ou toutes les deux semaines.`);
-  }
-  arr.push(`Spray au romarin — cuir chevelu\n1 tasse d'eau chaude · 1 c. à soupe de romarin séché\nInfuse 15 minutes, filtre, laisse refroidir. Vaporise légèrement 2 à 3 fois par semaine. Se conserve au réfrigérateur 5 à 7 jours.`);
-  if(state.scalp==="irritated"){
-    arr.push(`Soin cuir chevelu sensible\n2 c. à soupe d'aloe vera · Quelques gouttes d'huile de jojoba\nApplique en petite quantité avant le lavage. Évite les huiles essentielles si ton cuir chevelu est irrité.`);
-  }
+  if(state.porosity==="low_porosity") arr.push("Masque léger porosité faible : aloe vera + miel dilué + quelques gouttes d'huile de jojoba. Pose 25 minutes sous chaleur douce.");
+  else if(state.porosity==="high_porosity") arr.push("Masque hydratation + rétention : aloe vera + miel + huile d'avocat. Après rinçage, applique vite ton leave-in puis scelle.");
+  else arr.push("Masque équilibre : yaourt nature + miel + huile d'amande douce. Pose 20 à 25 minutes.");
+  arr.push("Spray romarin : infusion de romarin refroidie, à vaporiser légèrement 2 à 3 fois par semaine. Conservation : 5 à 7 jours au frigo.");
+  if(state.scalp==="irritated") arr.push("Cuir chevelu sensible : aloe vera + quelques gouttes d'huile de jojoba. Évite les huiles essentielles si irritation.");
   return arr.join("\n\n");
 }
-
 function plan7(profile){
-  if(profile.includes("Tempes")) return `Jour 1 : photo de suivi + arrêt immédiat de toutes les coiffures serrées.\nJour 2 : hydratation légère et douce des tempes.\nJour 3 : massage doux, 2 à 3 minutes.\nJour 4 : repos total — aucune tension, aucune manipulation.\nJour 5 : soin hydratant doux sur l'ensemble.\nJour 6 : coiffure très légère, foulard satin.\nJour 7 : observation, bilan et ajustements.`;
-  if(profile.includes("Casse")||profile.includes("Pousse")) return `Jour 1 : démêlage doux et méthodique en sections.\nJour 2 : hydratation complète + scellage des pointes.\nJour 3 : coiffure protectrice légère.\nJour 4 : massage du cuir chevelu, 3 à 5 minutes.\nJour 5 : masque hydratant ou fortifiant doux.\nJour 6 : repos complet de la manipulation.\nJour 7 : bilan casse + ajustement de la routine.`;
-  return `Jour 1 : hydratation complète, section par section.\nJour 2 : protection des pointes.\nJour 3 : vérification de la sécheresse.\nJour 4 : massage du cuir chevelu.\nJour 5 : masque hydratant.\nJour 6 : scellage léger des longueurs.\nJour 7 : observation + bilan de la semaine.`;
+  if(profile.includes("Tempes")) return "Jour 1 : arrêt des coiffures serrées.\nJour 2 : hydratation légère des tempes.\nJour 3 : massage doux.\nJour 4 : repos total.\nJour 5 : soin hydratant doux.\nJour 6 : coiffure très légère.\nJour 7 : observation et bilan.";
+  if(profile.includes("Casse")||profile.includes("Pousse")) return "Jour 1 : démêlage doux en sections.\nJour 2 : hydratation complète + scellage.\nJour 3 : coiffure protectrice légère.\nJour 4 : massage du cuir chevelu.\nJour 5 : masque hydratant ou fortifiant doux.\nJour 6 : repos de manipulation.\nJour 7 : bilan casse et ajustement.";
+  return "Jour 1 : hydratation complète.\nJour 2 : protection des pointes.\nJour 3 : vérification de la sécheresse.\nJour 4 : massage du cuir chevelu.\nJour 5 : masque hydratant.\nJour 6 : scellage léger.\nJour 7 : bilan.";
 }
-
-function expectedResults(){
-  return `Dans les 2 premières semaines : cheveux plus souples, démêlage plus facile, moins de sensation rêche.\n\nAprès 1 mois : meilleure rétention de l'hydratation, moins de casse visible, routine plus instinctive.\n\nAprès 2 à 3 mois : meilleure rétention de longueur si la routine est régulière et les pointes protégées.`;
-}
-
-function improvSigns(){
-  return `Les cheveux restent souples plus longtemps.\nMoins de petits cheveux cassés au démêlage.\nPointes moins rêches.\nMoins de nœuds au réveil.\nCuir chevelu plus confortable.\nTu commences à comprendre ce qui fonctionne vraiment pour tes cheveux.`;
-}
-
+function expectedResults(){ return "2 semaines : cheveux plus souples, démêlage plus facile.\n\n1 mois : meilleure rétention d'hydratation et moins de casse visible.\n\n2 à 3 mois : meilleure rétention de longueur si la routine reste régulière."; }
+function improvSigns(){ return "• Cheveux souples plus longtemps\n• Moins de casse au démêlage\n• Pointes moins rêches\n• Moins de nœuds au réveil\n• Cuir chevelu plus confortable"; }
 function warnings(redFlags){
-  const w=["Ne mélange pas trop de recettes dans la même semaine.","Fais un test sur une petite section avant toute nouvelle préparation maison.","En cas de chute soudaine, de douleur, de zones clairsemées ou de plaques : consulte un professionnel de santé."];
-  if(state.scalp==="irritated") w.push("Évite les huiles essentielles et les gommages agressifs si ton cuir chevelu est irrité.");
-  if(state.heat==="often") w.push("Réduis progressivement l'utilisation de la chaleur et utilise toujours une protection thermique.");
+  const w=["Ce diagnostic est éducatif et ne remplace pas un avis médical.","Ne mélange pas trop de recettes dans la même semaine.","Fais un test sur une petite section avant toute nouvelle préparation maison."];
+  if(state.scalp==="irritated") w.push("Évite les huiles essentielles et gommages agressifs si ton cuir chevelu est irrité.");
+  if(state.heat==="often") w.push("Réduis progressivement la chaleur et utilise une protection thermique.");
   return [...w,...redFlags].map(x=>`• ${x}`).join("\n");
 }
-
 function bonus(){
-  if(state.porosity==="low_porosity")  return "Pour toi, la clé n'est pas d'utiliser plus de produit — c'est d'améliorer leur absorption : cheveux humides, petites sections, chaleur douce si possible.";
-  if(state.porosity==="high_porosity") return "Pour toi, tout se joue dans la rétention : hydrate bien puis scelle sans attendre, surtout sur les pointes.";
-  if(state.mainProblem==="growth")     return "Ne cours pas après la pousse — elle est déjà là. Protège plutôt la longueur que tu as déjà, en particulier tes pointes.";
-  return "Commence simple pendant 14 jours. Observe tes cheveux avant de changer plusieurs choses à la fois — la constance vaut mieux que la perfection.";
+  if(state.porosity==="low_porosity") return "Pour toi, la clé n'est pas plus de produit : c'est une meilleure absorption.";
+  if(state.porosity==="high_porosity") return "Pour toi, tout se joue dans la rétention : hydrate puis scelle sans attendre.";
+  if(state.mainProblem==="growth") return "Ne cours pas seulement après la pousse : protège la longueur que tu as déjà.";
+  return "Commence simple pendant 14 jours. Observe avant de changer plusieurs choses à la fois.";
 }
 
 function analyzeProfile(){
-  let score=10;
-  const causes=[], redFlags=[];
-
+  let score=10; const causes=[], redFlags=[];
   if(state.lastHydration==="week_plus"||state.lastHydration==="unknown"){ score-=2; causes.push("Hydratation trop espacée ou difficile à maintenir"); }
   if(state.washFrequency==="monthly"||state.washFrequency==="rare"){ score-=1; causes.push("Fréquence de lavage trop espacée, favorisant l'accumulation"); }
-  if(state.routine==="unstable"||state.routine==="none"){ score-=2; causes.push("Routine capillaire irrégulière ou inexistante"); }
+  if(state.routine==="unstable"||state.routine==="none"){ score-=2; causes.push("Routine irrégulière ou inexistante"); }
   if(state.breakage==="high"){ score-=2; causes.push("Casse importante lors de la manipulation"); }
-  if(state.detangling==="often_dry"||state.detangling==="sometimes_dry"||state.detangling==="unsure"){ score-=1; causes.push("Démêlage trop sec, trop rapide ou mal maîtrisé"); }
-  if(state.styles==="tight"){ score-=2; causes.push("Coiffures trop serrées générant une tension sur les tempes"); }
-  if(state.scalp==="irritated"){ score-=1; causes.push("Cuir chevelu irrité ou sensible"); redFlags.push("Si les démangeaisons, plaques, douleurs ou chute intense persistent : consulte un dermatologue."); }
+  if(["often_dry","sometimes_dry","unsure"].includes(state.detangling)){ score-=1; causes.push("Démêlage trop sec, trop rapide ou mal maîtrisé"); }
+  if(state.styles==="tight"){ score-=2; causes.push("Coiffures trop serrées et tension sur les tempes"); }
+  if(state.scalp==="irritated"){ score-=1; causes.push("Cuir chevelu irrité ou sensible"); redFlags.push("Si démangeaisons, plaques, douleurs ou chute intense persistent : consulte un dermatologue."); }
   if(state.products==="too_heavy"||state.products==="no_result"){ score-=1; causes.push("Produits probablement mal adaptés à ta porosité ou à ton épaisseur de mèche"); }
   if(state.buildup==="heavy"){ score-=1; causes.push("Accumulation de produits possible"); }
-  if(state.heat==="often"){ score-=1; causes.push("Utilisation trop fréquente de la chaleur, accentuant sécheresse et fragilité"); }
+  if(state.heat==="often"){ score-=1; causes.push("Utilisation fréquente de la chaleur"); }
   if(state.water==="low"){ score-=1; causes.push("Hydratation interne insuffisante"); }
   if(state.foodProtein==="rare"){ score-=1; causes.push("Apport en protéines alimentaires possiblement insuffisant"); }
-  if(state.stressSleep==="high_stress"){ score-=1; causes.push("Stress élevé ou manque de sommeil impactant la santé capillaire"); }
-  if(state.climate==="hot_dry"||state.climate==="cold"){ score-=1; causes.push("Climat qui accentue la tendance à la sécheresse"); }
+  if(state.stressSleep==="high_stress"){ score-=1; causes.push("Stress élevé ou manque de sommeil"); }
+  if(state.climate==="hot_dry"||state.climate==="cold"){ score-=1; causes.push("Climat qui accentue la sécheresse"); }
+  score=Math.max(1,score);
 
-  score = Math.max(1,score);
-
-  let profile="Routine à stabiliser", offer="Routine Capillaire Personnalisée";
-  let priority="stabiliser la routine, comprendre les besoins de tes cheveux et construire une base saine";
-  let summary="Tes cheveux ont besoin d'une routine plus claire, plus régulière et plus simple. La priorité est de réduire la confusion et d'instaurer une base stable sur laquelle tout pourra se construire.";
-  let routine=routineSimple();
-
+  let profile="Routine à stabiliser", offer="Routine Capillaire Personnalisée", priority="stabiliser la routine", summary="Tes cheveux ont besoin d'une routine plus claire, régulière et simple.", routine=routineSimple();
   if(state.mainProblem==="dryness"||state.goal==="hydration"||state.lastHydration==="week_plus"){
-    profile="Sécheresse chronique / hydratation irrégulière";
-    offer="Guide Hydratation Cheveux Crépus";
-    priority=state.porosity==="high_porosity"?"améliorer la rétention d'hydratation et sceller plus efficacement":"faire pénétrer l'hydratation sans surcharger la fibre";
-    summary="Tes cheveux semblent manquer d'eau, de scellage et d'une fréquence d'hydratation adaptée. Le problème n'est pas forcément le manque de produits — c'est souvent la méthode et la régularité qui font défaut.";
-    routine=routineHydration();
+    profile="Sécheresse chronique / hydratation irrégulière"; offer="Guide Hydratation Cheveux Crépus"; priority="améliorer l'hydratation et la rétention"; summary="Tes cheveux semblent manquer d'eau, de scellage et d'une fréquence d'hydratation adaptée."; routine=routineHydration();
   }
-
   if(state.mainProblem==="growth"||state.goal==="length"){
-    profile="Pousse bloquée par la casse";
-    offer="Programme Pousse & Rétention";
-    priority="réduire la casse et améliorer la rétention de longueur";
-    summary="Tes cheveux poussent probablement, mais la longueur ne se voit pas parce que les pointes cassent, se dessèchent ou ne sont pas suffisamment protégées.";
-    routine=routineGrowth();
+    profile="Pousse bloquée par la casse"; offer="Programme Pousse & Rétention"; priority="réduire la casse et améliorer la rétention de longueur"; summary="Tes cheveux poussent probablement, mais la longueur ne se voit pas parce que les pointes cassent ou se dessèchent."; routine=routineGrowth();
   }
-
   if(state.mainProblem==="breakage"||state.breakage==="high"){
-    profile="Casse silencieuse / fibre fragilisée";
-    offer="Routine Anti-Casse";
-    priority="réduire la casse, renforcer doucement la fibre et protéger les pointes";
-    summary="Tes cheveux ont besoin de douceur avant tout : hydratation profonde, soin fortifiant léger et une meilleure protection au démêlage comme pendant la nuit.";
-    routine=routineBreakage();
+    profile="Casse silencieuse / fibre fragilisée"; offer="Routine Anti-Casse"; priority="réduire la casse et protéger les pointes"; summary="Tes cheveux ont besoin de douceur, de soin profond et d'une meilleure protection au démêlage."; routine=routineBreakage();
   }
-
   if(state.mainProblem==="hairloss"||state.goal==="edges"||state.styles==="tight"){
-    profile="Tempes et cuir chevelu à préserver";
-    offer="Programme Tempes & Repousse Douce";
-    priority="réduire la tension, apaiser le cuir chevelu et protéger les zones fragiles";
-    summary="Ta priorité absolue est de supprimer toutes les tensions, éviter les coiffures serrées et laisser les zones fragiles récupérer dans la douceur et la patience.";
-    routine=routineEdges();
+    profile="Tempes et cuir chevelu à préserver"; offer="Programme Tempes & Repousse Douce"; priority="réduire la tension et apaiser le cuir chevelu"; summary="Ta priorité absolue est de supprimer les tensions et de laisser les zones fragiles récupérer."; routine=routineEdges();
   }
-
   if(state.mainProblem==="lost"||state.goal==="simple_routine"){
-    profile="Trop d'informations, besoin de clarté";
-    offer="Diagnostic Capillaire Personnalisé";
-    priority="construire une routine simple, réaliste et facile à maintenir dans la durée";
-    summary="Tu as besoin d'un plan clair, avec peu de produits mais une vraie régularité. Trop d'informations peut paralyser plus qu'aider — commence simple, observe, ajuste.";
-    routine=routineSimple();
+    profile="Trop d'informations, besoin de clarté"; offer="Diagnostic Capillaire Personnalisé"; priority="construire une routine simple et réaliste"; summary="Tu as besoin d'un plan clair avec peu de produits et beaucoup de régularité."; routine=routineSimple();
   }
-
-  const causesText = causes.length ? causes.map(c=>`• ${c}`).join("\n") : "• Aucun blocage majeur détecté — la régularité reste le facteur clé.";
 
   return {
     score, profile, priority, offer, summary,
-    causes: causesText,
+    causes: causes.length ? causes.map(c=>`• ${c}`).join("\n") : "• Aucun blocage majeur détecté — la régularité reste le facteur clé.",
     coachReading: [porosityInsight(), climateNote(), textureNote(), buildupNote(), lifestyleNote()].filter(Boolean).join("\n\n"),
-    routine, recipes:recipes(), plan7:plan7(profile),
-    expectedResults:expectedResults(), improvSigns:improvSigns(),
-    warnings:warnings(redFlags), bonus:bonus(), redFlags
+    routine, recipes:recipes(), plan7:plan7(profile), expectedResults:expectedResults(), improvSigns:improvSigns(), warnings:warnings(redFlags), bonus:bonus(), redFlags
   };
 }
 
-// ─── Build diagnosis ──────────────────────────────────────────────────────────
 async function buildDiagnosis(){
-  setStep("done");
-  resetBtn.classList.add("visible");
+  setStep("done"); resetBtn.classList.add("visible");
   const a = analyzeProfile();
-  state.score=a.score; state.profile=a.profile; state.priority=a.priority;
-  state.offer=a.offer; state.redFlags=a.redFlags;
+  state.score=a.score; state.profile=a.profile; state.priority=a.priority; state.offer=a.offer; state.redFlags=a.redFlags;
+  trackEvent("diagnostic_completed", {profile:a.profile, score:a.score});
 
-  await botSay(`${state.name || "Ma belle"}, je veux que tu retiennes quelque chose d'important :\n\nTes cheveux ne sont pas le problème.\nIls cherchent simplement à s'adapter à ce que tu leur donnes.\n\nAujourd'hui, on va les écouter différemment. 💛`, 800);
-
-  await botSay(`✨ En tant que coach capillaire spécialisée, voici ce que j'ai relevé pour toi :`, 600);
+  await botSay(`${state.name || "Ma belle"}, retiens ceci : tes cheveux ne sont pas le problème. Ils essaient simplement de répondre à ce que tu leur donnes. 💛`, 800);
+  await botSay("✨ Voici ta première lecture Schicgirl :", 500);
 
   const resultHTML = `<div>
-<div class="result-section">
-  <div class="result-label">Score santé capillaire</div>
-  <div class="score-ring">
-    <span class="score-num">${a.score}/10</span>
-    <span class="score-label">Profil détecté<br><strong>${a.profile}</strong></span>
-  </div>
-  <p><em>Priorité : ${a.priority}.</em></p>
-</div>
-<div class="divider"></div>
-<div class="result-section">
-  <div class="result-label">Ce que je vois</div>
-  <p>${a.summary}</p>
-</div>
-<div class="result-section">
-  <div class="result-label">Les causes réelles</div>
-  <p style="white-space:pre-line">${a.causes}</p>
-</div>
-<div class="result-section">
-  <div class="result-label">Lecture de coach</div>
-  <p style="white-space:pre-line">${a.coachReading}</p>
-</div>
-<div class="divider"></div>
-<div class="result-section">
-  <div class="result-label">Ta routine détaillée</div>
-  <p style="white-space:pre-line">${a.routine}</p>
-</div>
-<div class="divider"></div>
-<div class="result-section">
-  <div class="result-label">Soins maison adaptés</div>
-  <p style="white-space:pre-line">${a.recipes}</p>
-</div>
-<div class="divider"></div>
-<div class="result-section">
-  <div class="result-label">Plan starter — 7 jours</div>
-  <p style="white-space:pre-line">${a.plan7}</p>
-</div>
-<div class="divider"></div>
-<div class="result-section">
-  <div class="result-label">Résultats réalistes à attendre</div>
-  <p style="white-space:pre-line">${a.expectedResults}</p>
-</div>
-<div class="result-section">
-  <div class="result-label">Signes d'amélioration à surveiller</div>
-  <p style="white-space:pre-line">${a.improvSigns}</p>
-</div>
-<div class="result-section">
-  <div class="result-label">Précautions importantes</div>
-  <p style="white-space:pre-line">${a.warnings}</p>
-</div>
-<div class="result-section">
-  <div class="result-label">Le conseil Schicgirl</div>
-  <p>${a.bonus}</p>
-</div>
-</div>`;
-
+    <div class="result-section">
+      <div class="result-label">Score santé capillaire</div>
+      <div class="score-ring"><span class="score-num">${a.score}/10</span><span class="score-label">Profil détecté<br><strong>${a.profile}</strong></span></div>
+      <p><em>Priorité : ${a.priority}.</em></p>
+    </div>
+    <div class="divider"></div>
+    <div class="result-section"><div class="result-label">Ce que je vois</div><p>${a.summary}</p></div>
+    <div class="result-section"><div class="result-label">Causes probables</div><p style="white-space:pre-line">${a.causes}</p></div>
+    <div class="result-section"><div class="result-label">Lecture de coach</div><p style="white-space:pre-line">${a.coachReading}</p></div>
+    <div class="divider"></div>
+    <div class="result-section"><div class="result-label">Direction de routine gratuite</div><p style="white-space:pre-line">${a.routine}</p></div>
+    <div class="result-section"><div class="result-label">Soin maison adapté</div><p style="white-space:pre-line">${a.recipes}</p></div>
+    <div class="result-section"><div class="result-label">Starter 7 jours</div><p style="white-space:pre-line">${a.plan7}</p></div>
+    <div class="divider"></div>
+    <div class="result-section"><div class="result-label">Résultats réalistes</div><p style="white-space:pre-line">${a.expectedResults}</p></div>
+    <div class="result-section"><div class="result-label">Signes d'amélioration</div><p style="white-space:pre-line">${a.improvSigns}</p></div>
+    <div class="result-section"><div class="result-label">Précautions</div><p style="white-space:pre-line">${a.warnings}</p></div>
+    <div class="result-section"><div class="result-label">Conseil Schicgirl</div><p>${a.bonus}</p></div>
+  </div>`;
   const resultDiv = document.createElement("div");
   resultDiv.className = "msg result";
   resultDiv.innerHTML = resultHTML;
@@ -1317,17 +859,16 @@ async function buildDiagnosis(){
 
   const sets = getSettings();
   const offerHtml = `<div class="offer-wrap">
-  <h3>💛 Si tu veux aller plus loin avec moi</h3>
-  <p>Ton diagnostic gratuit te donne une direction solide. Ce qui fait la différence maintenant, c'est de choisir le bon soutien pour ton besoin actuel.</p>
-  <p><strong>💧 Le guide hydratation</strong> est fait pour toi si ton problème principal est la sécheresse, les cheveux rêches ou une hydratation qui ne tient pas.</p>
-  <p><strong>🌿 La routine personnalisée</strong> est idéale si tu veux une routine pensée pour TON profil exact : ta porosité, ta casse, ton climat, tes habitudes et le temps dont tu disposes.</p>
-  <div class="offer-btns">
-    <a class="offer-btn primary" href="${sets.shopLink}" target="_blank" rel="noopener">💧 Accéder au guide hydratation</a>
-    <a class="offer-btn gold" href="${sets.premiumLink}" target="_blank" rel="noopener">🌿 Accéder à la routine personnalisée</a>
-  </div>
-  <p style="font-size:12.5px">C'est ce qui fait la différence entre essayer des conseils en espérant que ça marche… et commencer à voir de vrais résultats avec une direction claire. Je te fais confiance pour choisir ce qui est le mieux pour toi. 💛</p>
-</div>`;
-
+    <h3>💛 Si tu veux aller plus loin avec moi</h3>
+    <p>Ton diagnostic gratuit te donne une première direction. Ce qui fait la différence maintenant, c'est une routine pensée pour ton profil exact : porosité, casse, climat, cuir chevelu, habitudes et temps disponible.</p>
+    <p><strong>💧 Le guide hydratation</strong> est idéal si ton souci principal est la sécheresse, les cheveux rêches ou l'hydratation qui ne tient pas.</p>
+    <p><strong>🌿 Le diagnostic premium</strong> est idéal si tu veux un plan personnalisé complet, étape par étape, avec recommandations adaptées à ton profil.</p>
+    <div class="offer-btns">
+      <a class="offer-btn primary" href="${sets.shopLink}" target="_blank" rel="noopener" onclick="trackEvent('click_hydration_guide')">💧 Accéder au guide hydratation</a>
+      <a class="offer-btn gold" href="${sets.premiumLink}" target="_blank" rel="noopener" onclick="trackEvent('click_premium_diagnostic')">🌿 Accéder au diagnostic premium</a>
+    </div>
+    <p style="font-size:12.5px">Le but n'est pas d'acheter plus de produits. Le but est de comprendre exactement ce que tes cheveux demandent, puis d'agir avec méthode. 💛</p>
+  </div>`;
   setTimeout(()=>{
     const offerDiv = document.createElement("div");
     offerDiv.className = "msg html-msg";
@@ -1336,22 +877,22 @@ async function buildDiagnosis(){
     chatBox.scrollTop = chatBox.scrollHeight;
   }, 400);
 
-  saveLead();
-  markUsed();
-
-  const replies=[{label:"Voir les offres",value:"shop"},{label:"Diagnostic premium",value:"premium"}];
+  saveLead(); markUsed();
+  const replies=[{label:"Voir le guide hydratation",value:"shop"},{label:"Diagnostic premium",value:"premium"}];
   if(!oneUseEnabled()) replies.push({label:"Recommencer",value:"restart"});
   setTimeout(()=>setReplies(replies), 500);
 }
 
-// ─── Events ───────────────────────────────────────────────────────────────────
 chatForm.addEventListener("submit", e=>{
   e.preventDefault();
   const v = userInput.value.trim();
   if(v) handleReply(v);
 });
-
-resetBtn.addEventListener("click", startChat);
+resetBtn.addEventListener("click", ()=>{
+  // Pour vrai public, garde le one-use. Pour tes tests, tu peux décommenter cette ligne :
+  // localStorage.removeItem(CONFIG.usedStorageKey);
+  startChat();
+});
 
 startChat();
 </script>
