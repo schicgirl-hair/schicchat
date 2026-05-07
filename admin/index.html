@@ -1,1 +1,1328 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>SchicChat Admin | Schicgirl</title><link rel="icon" href="../favicon.ico"><link rel="stylesheet" href="admin.css"></head><body><main class="admin-shell"><section id="loginCard" class="card"><p class="eyebrow">Schicgirl™ Admin</p><h1>Accès privé</h1><p>Entre ton mot de passe local, puis ton lien Apps Script et ton token admin.</p><label>Mot de passe local</label><input id="localPassword" type="password" placeholder="Mot de passe admin"><label>Google Apps Script Web App URL</label><input id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec"><label>Admin token</label><input id="adminToken" type="password" placeholder="ADMIN_TOKEN depuis Code.gs"><button id="loginBtn">Entrer</button></section><section id="dashboard" class="card hidden"><div class="topbar"><div><p class="eyebrow">Schicgirl™ Admin</p><h1>Dashboard leads</h1></div><button id="logoutBtn" class="secondary">Déconnexion</button></div><div class="stats"><div><strong id="leadCount">0</strong><span>Total leads</span></div><div><strong id="lastProfile">—</strong><span>Dernier profil</span></div></div><div class="actions"><button id="refreshBtn">Rafraîchir</button><button id="exportBtn" class="secondary">Exporter CSV</button></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Nom</th><th>Contact</th><th>Pays</th><th>Profil</th><th>Score</th><th>Priorité</th></tr></thead><tbody id="leadRows"></tbody></table></div></section></main><script src="admin.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchicChat Admin | Schicgirl</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #fdf6ee;
+      --warm:     #f5e9d8;
+      --blush:    #f2d5cf;
+      --rose:     #e4b4af;
+      --brown:    #3e261c;
+      --brown-md: #6b3e2e;
+      --brown-lt: #9a6b58;
+      --gold:     #b07b38;
+      --gold-lt:  #d4a55e;
+      --gold-pale:#f0e0c4;
+      --muted:    #9a7060;
+      --white:    #ffffff;
+      --danger:   #8a3a33;
+      --success:  #3a6b4c;
+      --shadow-s: 0 4px 20px rgba(62,38,28,.07);
+      --shadow-m: 0 12px 40px rgba(62,38,28,.12);
+      --shadow-l: 0 28px 80px rgba(62,38,28,.17);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --radius: 20px;
+      --radius-lg: 28px;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: var(--sans);
+      color: var(--brown);
+      background:
+        radial-gradient(ellipse 70% 50% at 5% 0%,   #f2ccc7 0%, transparent 50%),
+        radial-gradient(ellipse 55% 45% at 95% 100%, #edd9b0 0%, transparent 48%),
+        linear-gradient(160deg, #fdf6ee 0%, #f8ece0 100%);
+      background-attachment: fixed;
+    }
+
+    /* ── SHELL ─────────────────────────────── */
+    .shell {
+      width: min(1180px, 94vw);
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    /* ── TOP BRAND ─────────────────────────── */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--rose), var(--gold));
+      display: grid; place-items: center;
+      font-family: var(--serif);
+      font-size: 26px; font-weight: 600;
+      color: var(--white);
+      box-shadow: 0 6px 20px rgba(176,123,56,.35);
+      flex-shrink: 0;
+    }
+
+    .brand-text p {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .brand-text h1 {
+      font-family: var(--serif);
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    /* ── CARD ──────────────────────────────── */
+    .card {
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(176,123,56,.18);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-l);
+      padding: 32px;
+    }
+
+    /* ── HIDDEN ────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── LOGIN CARD ────────────────────────── */
+    #loginCard {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    #loginCard p.sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* ── FORM ELEMENTS ─────────────────────── */
+    .form-group { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--brown-lt);
+      margin-bottom: 7px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select {
+      width: 100%;
+      height: 46px;
+      padding: 0 16px;
+      border: 1.5px solid rgba(176,123,56,.28);
+      border-radius: 12px;
+      background: var(--white);
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--brown);
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(176,123,56,.1);
+    }
+
+    input::placeholder { color: rgba(154,112,96,.5); }
+
+    /* ── BUTTONS ───────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 42px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: none;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--brown);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--brown-md); transform: translateY(-1px); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--white);
+    }
+    .btn-gold:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(176,123,56,.35);
+      color: var(--brown-md);
+    }
+    .btn-outline:hover { background: var(--warm); border-color: var(--gold); }
+
+    .btn-danger {
+      background: var(--danger);
+      color: var(--white);
+    }
+    .btn-danger:hover { filter: brightness(1.1); }
+
+    .btn-sm { height: 34px; padding: 0 14px; font-size: 12px; }
+
+    .btn-full { width: 100%; justify-content: center; height: 48px; font-size: 14px; }
+
+    /* ── DASHBOARD ─────────────────────────── */
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .dash-title p {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+
+    .dash-title h2 {
+      font-family: var(--serif);
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-weight: 400;
+    }
+
+    .dash-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    /* ── STATS GRID ────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid rgba(176,123,56,.16);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-s);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-m); }
+
+    .stat-icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .stat-value {
+      font-family: var(--serif);
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── FILTERS BAR ───────────────────────── */
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-wrap input {
+      height: 40px;
+      padding-left: 38px;
+      font-size: 13px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .filter-select {
+      height: 40px;
+      min-width: 160px;
+      font-size: 13px;
+      padding: 0 12px;
+    }
+
+    /* ── TABLE ─────────────────────────────── */
+    .table-wrap {
+      background: var(--white);
+      border: 1px solid rgba(176,123,56,.14);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-s);
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(176,123,56,.12);
+      background: rgba(253,246,238,.7);
+    }
+
+    .table-header h3 {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .table-count {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--warm);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .tbl thead tr {
+      background: rgba(253,246,238,.5);
+    }
+
+    .tbl th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(176,123,56,.1);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .tbl th:hover { color: var(--gold); }
+    .tbl th .sort-arrow { opacity:.4; margin-left:4px; font-size:10px; }
+    .tbl th.sorted .sort-arrow { opacity:1; color:var(--gold); }
+
+    .tbl td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(176,123,56,.07);
+      color: var(--brown);
+      vertical-align: top;
+    }
+
+    .tbl tr:last-child td { border-bottom: none; }
+
+    .tbl tbody tr {
+      transition: background .15s;
+    }
+
+    .tbl tbody tr:hover { background: rgba(253,246,238,.6); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-gold   { background: rgba(176,123,56,.12); color: var(--gold); border: 1px solid rgba(176,123,56,.25); }
+    .badge-rose   { background: rgba(228,180,175,.18); color: #8a4a40; border: 1px solid rgba(228,180,175,.4); }
+    .badge-green  { background: rgba(58,107,76,.1);   color: var(--success); border: 1px solid rgba(58,107,76,.2); }
+    .badge-brown  { background: rgba(62,38,28,.08);   color: var(--brown-md); border: 1px solid rgba(62,38,28,.15); }
+
+    /* Score pill */
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .score-high   { background: rgba(58,107,76,.12);  color: var(--success); }
+    .score-mid    { background: rgba(176,123,56,.12);  color: var(--gold); }
+    .score-low    { background: rgba(138,58,51,.1);    color: var(--danger); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+    }
+
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+
+    /* ── DETAIL DRAWER ─────────────────────── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(62,38,28,.35);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .drawer-overlay.open { display: flex; animation: fadeOverlay .22s; }
+
+    @keyframes fadeOverlay { from { opacity:0; } to { opacity:1; } }
+
+    .drawer {
+      width: min(540px, 100vw);
+      height: 100vh;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(24px);
+      overflow-y: auto;
+      animation: slideIn .26s cubic-bezier(.4,0,.2,1);
+      box-shadow: -20px 0 60px rgba(62,38,28,.2);
+    }
+
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: none; } }
+
+    .drawer-head {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(176,123,56,.15);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .drawer-head h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+    }
+
+    .drawer-body { padding: 24px; }
+
+    .detail-section { margin-bottom: 24px; }
+
+    .detail-section h4 {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .detail-item {
+      background: rgba(253,246,238,.7);
+      border: 1px solid rgba(176,123,56,.14);
+      border-radius: 12px;
+      padding: 11px 14px;
+    }
+
+    .detail-item .d-label {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .detail-item .d-val {
+      font-size: 13.5px;
+      color: var(--brown);
+      font-weight: 500;
+    }
+
+    .detail-divider { height: 1px; background: rgba(176,123,56,.12); margin: 20px 0; }
+
+    /* ── TOAST ─────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--brown);
+      color: var(--white);
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 500;
+      box-shadow: var(--shadow-m);
+      z-index: 999;
+      transition: transform .3s cubic-bezier(.34,1.2,.64,1);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+
+    /* ── LOADING SKELETON ──────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, #f0e6dc 25%, #f8f0e8 50%, #f0e6dc 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+      height: 14px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── PAGINATION ────────────────────────── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(176,123,56,.1);
+      background: rgba(253,246,238,.5);
+      font-size: 13px;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .page-btns { display: flex; gap: 6px; }
+
+    .page-btn {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(176,123,56,.22);
+      background: var(--white);
+      color: var(--brown-md);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+      display: grid; place-items: center;
+    }
+
+    .page-btn:hover   { background: var(--warm); border-color: var(--gold); }
+    .page-btn.active  { background: var(--brown); color: var(--white); border-color: var(--brown); }
+    .page-btn:disabled{ opacity:.38; cursor: not-allowed; }
+
+    /* ── TABS (profil breakdown) ───────────── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: rgba(176,123,56,.08);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      height: 36px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .18s;
+    }
+
+    .tab.active {
+      background: var(--white);
+      color: var(--brown);
+      box-shadow: var(--shadow-s);
+    }
+
+    /* ── ANALYTICS SECTION ─────────────────── */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .chart-card {
+      background: var(--white);
+      border: 1px solid rgba(176,123,56,.14);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-s);
+    }
+
+    .chart-card h4 {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      color: var(--brown);
+    }
+
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+
+    .bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .bar-row .bar-label { width: 130px; flex-shrink: 0; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-row .bar-track { flex: 1; height: 8px; background: var(--warm); border-radius: 999px; overflow: hidden; }
+    .bar-row .bar-fill  { height: 100%; background: linear-gradient(90deg, var(--rose), var(--gold)); border-radius: 999px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+    .bar-row .bar-count { width: 28px; text-align: right; color: var(--brown-md); font-weight: 600; }
+
+    .donut-wrap { display: flex; align-items: center; gap: 20px; }
+    .donut-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── DIVIDER ───────────────────────────── */
+    .section-divider {
+      height: 1px;
+      background: rgba(176,123,56,.12);
+      margin: 28px 0;
+    }
+
+    /* ── RESPONSIVE ────────────────────────── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .analytics-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { padding: 16px 0 40px; }
+      .card { padding: 20px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .dash-header { gap: 12px; }
+      .tbl th, .tbl td { padding: 10px 12px; }
+      .drawer { width: 100vw; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── MARQUE ──────────────────────────── -->
+  <div class="brand">
+    <div class="brand-mark">S</div>
+    <div class="brand-text">
+      <p>Schicgirl™</p>
+      <h1>Espace Admin</h1>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CONNEXION
+  ══════════════════════════════════════ -->
+  <section id="loginCard" class="card">
+    <p style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Accès sécurisé</p>
+    <h2 style="font-family:var(--serif);font-size:clamp(22px,3vw,32px);font-weight:400;margin-bottom:8px;">Connexion Admin</h2>
+    <p class="sub">Entre ton mot de passe local, puis le lien de ton Apps Script et le token admin pour accéder au tableau de bord.</p>
+
+    <div class="form-group">
+      <label>Mot de passe local</label>
+      <input id="localPassword" type="password" placeholder="••••••••••" autocomplete="current-password" />
+    </div>
+
+    <div class="form-group">
+      <label>Google Apps Script — Web App URL</label>
+      <input id="webAppUrl" type="text" placeholder="https://script.google.com/macros/s/…/exec" />
+    </div>
+
+    <div class="form-group">
+      <label>Admin Token</label>
+      <input id="adminToken" type="password" placeholder="Token défini dans Code.gs" />
+    </div>
+
+    <button class="btn btn-primary btn-full" id="loginBtn" style="margin-top:8px;">
+      Se connecter →
+    </button>
+
+    <p id="loginError" style="display:none;color:var(--danger);font-size:13px;margin-top:12px;text-align:center;"></p>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       DASHBOARD
+  ══════════════════════════════════════ -->
+  <section id="dashboard" class="hidden">
+
+    <!-- En-tête -->
+    <div class="dash-header">
+      <div class="dash-title">
+        <p>Schicgirl™ Dashboard</p>
+        <h2>Leads & Diagnostics</h2>
+      </div>
+      <div class="dash-actions">
+        <button class="btn btn-outline" id="refreshBtn">⟳ Rafraîchir</button>
+        <button class="btn btn-gold" id="exportBtn">↓ Exporter CSV</button>
+        <button class="btn btn-outline btn-sm" id="logoutBtn" style="border-color:rgba(138,58,51,.3);color:var(--danger);">Déconnexion</button>
+      </div>
+    </div>
+
+    <!-- ── Stats ── -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">💛</span>
+        <span class="stat-value" id="statTotal">0</span>
+        <span class="stat-label">Total diagnostics reçus</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📊</span>
+        <span class="stat-value" id="statAvgScore">—</span>
+        <span class="stat-label">Score moyen capillaire</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🌍</span>
+        <span class="stat-value" id="statCountries">0</span>
+        <span class="stat-label">Pays représentés</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🔥</span>
+        <span class="stat-value" id="statTopProfile">—</span>
+        <span class="stat-label">Profil le plus fréquent</span>
+      </div>
+    </div>
+
+    <!-- ── Analytics ── -->
+    <div class="analytics-grid">
+      <div class="chart-card">
+        <h4>Profils capillaires</h4>
+        <div class="bar-chart" id="profileChart"></div>
+      </div>
+      <div class="chart-card">
+        <h4>Scores de santé</h4>
+        <div class="bar-chart" id="scoreChart"></div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ── Filtres ── -->
+    <div class="filters-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" type="text" placeholder="Rechercher par nom, pays, profil…" />
+      </div>
+      <select id="filterProfile" class="filter-select">
+        <option value="">Tous les profils</option>
+      </select>
+      <select id="filterScore" class="filter-select">
+        <option value="">Tous les scores</option>
+        <option value="high">Score ≥ 7 (bon)</option>
+        <option value="mid">Score 4–6 (moyen)</option>
+        <option value="low">Score ≤ 3 (critique)</option>
+      </select>
+    </div>
+
+    <!-- ── Table ── -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <h3>Tous les leads</h3>
+        <span class="table-count" id="tableCount">0 résultat</span>
+      </div>
+
+      <div id="tableLoading" style="padding:32px;text-align:center;color:var(--muted);display:none;">
+        <div class="skeleton" style="margin:0 auto 8px;max-width:300px"></div>
+        <div class="skeleton" style="margin:0 auto 8px;max-width:240px;opacity:.6"></div>
+        <div class="skeleton" style="margin:0 auto;max-width:180px;opacity:.4"></div>
+      </div>
+
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">🌿</div>
+        <p>Aucun lead ne correspond à ta recherche.<br>Essaie de modifier les filtres.</p>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th data-col="date">Date <span class="sort-arrow">↕</span></th>
+              <th data-col="name">Nom <span class="sort-arrow">↕</span></th>
+              <th data-col="contact">Contact</th>
+              <th data-col="country">Pays <span class="sort-arrow">↕</span></th>
+              <th data-col="profile">Profil</th>
+              <th data-col="score">Score <span class="sort-arrow">↕</span></th>
+              <th>Détails</th>
+            </tr>
+          </thead>
+          <tbody id="leadRows"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="paginationBar">
+        <span id="paginationInfo" style="font-size:12px;color:var(--muted);"></span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     DRAWER — Détail lead
+══════════════════════════════════════ -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <h3 id="drawerTitle">Détail du lead</h3>
+      <button class="btn btn-outline btn-sm" id="drawerClose">✕ Fermer</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════ */
+const LOCAL_PASSWORD = "Nanabinta@6";
+
+const PROFILE_LABELS = {
+  "Sécheresse chronique":  { label:"Sécheresse chronique", badge:"badge-rose" },
+  "Longueur bloquée":      { label:"Longueur bloquée", badge:"badge-gold" },
+  "Casse active":          { label:"Casse active", badge:"badge-rose" },
+  "Tempes":                { label:"Tempes & follicules", badge:"badge-brown" },
+  "Cuir chevelu":          { label:"Cuir chevelu", badge:"badge-green" },
+  "Routine à construire":  { label:"Routine à construire", badge:"badge-brown" },
+  "Surcharge":             { label:"Surcharge d'infos", badge:"badge-gold" }
+};
+
+/* ═══════════════════════════════════════════════
+   ÉTAT
+═══════════════════════════════════════════════ */
+let allLeads = [];
+let filteredLeads = [];
+let sortCol = "date";
+let sortDir = -1; // -1 = desc
+let currentPage = 1;
+const PAGE_SIZE = 15;
+
+/* ═══════════════════════════════════════════════
+   DOM REFS
+═══════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const loginCard    = $("loginCard");
+const dashboard    = $("dashboard");
+const loginBtn     = $("loginBtn");
+const logoutBtn    = $("logoutBtn");
+const refreshBtn   = $("refreshBtn");
+const exportBtn    = $("exportBtn");
+const localPwdEl   = $("localPassword");
+const webAppUrlEl  = $("webAppUrl");
+const adminTokenEl = $("adminToken");
+const searchInput  = $("searchInput");
+const filterProfile= $("filterProfile");
+const filterScore  = $("filterScore");
+const leadRows     = $("leadRows");
+const tableCount   = $("tableCount");
+const drawerOverlay= $("drawerOverlay");
+const drawerClose  = $("drawerClose");
+const drawerBody   = $("drawerBody");
+const drawerTitle  = $("drawerTitle");
+const paginationInfo=$("paginationInfo");
+const pageBtns     = $("pageBtns");
+const tableLoading = $("tableLoading");
+const emptyState   = $("emptyState");
+const loginError   = $("loginError");
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+function showToast(msg, type=""){
+  const t=$("toast");
+  t.textContent=msg;
+  t.className="toast"+(type?" "+type:"");
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3200);
+}
+
+/* ═══════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════ */
+function saveSettings(){
+  localStorage.setItem("schic_admin_url",   webAppUrlEl.value.trim());
+  localStorage.setItem("schic_admin_token", adminTokenEl.value.trim());
+  localStorage.setItem("schic_admin_logged","true");
+}
+
+function loadSettings(){
+  webAppUrlEl.value   = localStorage.getItem("schic_admin_url")   || "";
+  adminTokenEl.value  = localStorage.getItem("schic_admin_token") || "";
+  if(localStorage.getItem("schic_admin_logged")==="true") showDashboard();
+}
+
+function showDashboard(){
+  loginCard.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  fetchLeads();
+}
+
+function showLogin(msg=""){
+  dashboard.classList.add("hidden");
+  loginCard.classList.remove("hidden");
+  if(msg){ loginError.style.display="block"; loginError.textContent=msg; }
+}
+
+loginBtn.onclick = ()=>{
+  loginError.style.display="none";
+  if(localPwdEl.value !== LOCAL_PASSWORD){
+    loginError.style.display="block";
+    loginError.textContent="Mot de passe local incorrect.";
+    localPwdEl.focus(); return;
+  }
+  if(!webAppUrlEl.value.trim()||!adminTokenEl.value.trim()){
+    loginError.style.display="block";
+    loginError.textContent="Ajoute le Web App URL et le token admin.";
+    return;
+  }
+  saveSettings();
+  showDashboard();
+};
+
+logoutBtn.onclick = ()=>{
+  localStorage.removeItem("schic_admin_logged");
+  showLogin();
+};
+
+/* Enter key on login form */
+[localPwdEl, webAppUrlEl, adminTokenEl].forEach(el=>{
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter") loginBtn.click(); });
+});
+
+/* ═══════════════════════════════════════════════
+   FETCH LEADS
+═══════════════════════════════════════════════ */
+async function fetchLeads(){
+  const url   = localStorage.getItem("schic_admin_url");
+  const token = localStorage.getItem("schic_admin_token");
+  if(!url||!token) return;
+
+  tableLoading.style.display="block";
+  leadRows.innerHTML="";
+  emptyState.classList.add("hidden");
+
+  try{
+    const res  = await fetch(`${url}?action=listLeads&adminToken=${encodeURIComponent(token)}`);
+    const data = await res.json();
+    tableLoading.style.display="none";
+    if(!data.ok){ showToast(data.error||"Erreur de chargement.","error"); return; }
+    allLeads = data.leads||[];
+    buildFilterOptions();
+    applyFiltersAndRender();
+    renderStats();
+    renderCharts();
+    showToast(`${allLeads.length} lead${allLeads.length>1?"s":""} chargé${allLeads.length>1?"s":""}.`,"success");
+  } catch(err){
+    tableLoading.style.display="none";
+    showToast("Impossible de charger les leads. Vérifie le déploiement Apps Script.","error");
+    console.error(err);
+  }
+}
+
+refreshBtn.onclick = fetchLeads;
+
+/* ═══════════════════════════════════════════════
+   FILTRES
+═══════════════════════════════════════════════ */
+function buildFilterOptions(){
+  const profiles = [...new Set(allLeads.map(l=>l.profile||"").filter(Boolean))].sort();
+  filterProfile.innerHTML = `<option value="">Tous les profils</option>`;
+  profiles.forEach(p=>{
+    const o=document.createElement("option");
+    o.value=p; o.textContent=p.length>30?p.slice(0,30)+"…":p;
+    filterProfile.appendChild(o);
+  });
+}
+
+searchInput.addEventListener("input",  ()=>{ currentPage=1; applyFiltersAndRender(); });
+filterProfile.addEventListener("change",()=>{ currentPage=1; applyFiltersAndRender(); });
+filterScore.addEventListener("change",  ()=>{ currentPage=1; applyFiltersAndRender(); });
+
+function applyFiltersAndRender(){
+  const q     = searchInput.value.toLowerCase().trim();
+  const prof  = filterProfile.value;
+  const scoreF= filterScore.value;
+
+  filteredLeads = allLeads.filter(l=>{
+    if(q && !["name","contact","country","profile","priority"].some(k=> String(l[k]||"").toLowerCase().includes(q))) return false;
+    if(prof && !(l.profile||"").includes(prof.split(" ")[0])) return false;
+    if(scoreF){
+      const s=Number(l.score||0);
+      if(scoreF==="high" && s<7)  return false;
+      if(scoreF==="mid"  && (s<4||s>6)) return false;
+      if(scoreF==="low"  && s>3)  return false;
+    }
+    return true;
+  });
+
+  sortLeads();
+  renderTable();
+  renderPagination();
+}
+
+/* ═══════════════════════════════════════════════
+   TRI
+═══════════════════════════════════════════════ */
+document.querySelectorAll(".tbl th[data-col]").forEach(th=>{
+  th.onclick=()=>{
+    const col=th.dataset.col;
+    if(sortCol===col) sortDir*=-1;
+    else{ sortCol=col; sortDir=-1; }
+    document.querySelectorAll(".tbl th").forEach(t=>t.classList.remove("sorted"));
+    th.classList.add("sorted");
+    th.querySelector(".sort-arrow").textContent = sortDir===-1?"↓":"↑";
+    applyFiltersAndRender();
+  };
+});
+
+function sortLeads(){
+  filteredLeads.sort((a,b)=>{
+    let va=a[sortCol]||"", vb=b[sortCol]||"";
+    if(sortCol==="score"){ va=Number(va)||0; vb=Number(vb)||0; return sortDir*(va-vb); }
+    return sortDir*(String(va).localeCompare(String(vb)));
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   TABLE RENDER
+═══════════════════════════════════════════════ */
+function renderTable(){
+  const start=(currentPage-1)*PAGE_SIZE;
+  const page=filteredLeads.slice(start, start+PAGE_SIZE);
+
+  tableCount.textContent=`${filteredLeads.length} résultat${filteredLeads.length>1?"s":""}`;
+  leadRows.innerHTML="";
+
+  if(!filteredLeads.length){
+    emptyState.classList.remove("hidden");
+    $("paginationBar").style.display="none";
+    return;
+  }
+
+  emptyState.classList.add("hidden");
+  $("paginationBar").style.display="flex";
+
+  page.forEach((lead,i)=>{
+    const tr=document.createElement("tr");
+    const date=lead.date?new Date(lead.date).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"numeric"}):"—";
+    const score=Number(lead.score||0);
+    const scoreClass = score>=7?"score-high":score>=4?"score-mid":"score-low";
+    const prof=lead.profile||"";
+    const profKey=Object.keys(PROFILE_LABELS).find(k=>prof.includes(k));
+    const profMeta=profKey?PROFILE_LABELS[profKey]:{label:prof.slice(0,28)||(prof||"—"),badge:"badge-brown"};
+
+    tr.innerHTML=`
+      <td style="font-size:12px;color:var(--muted);white-space:nowrap">${date}</td>
+      <td><strong>${esc(lead.name||"—")}</strong></td>
+      <td style="font-size:12px;color:var(--muted)">${esc(lead.contact||"—")}</td>
+      <td>${esc(lead.country||"—")}</td>
+      <td><span class="badge ${profMeta.badge}">${esc(profMeta.label)}</span></td>
+      <td><span class="score-pill ${scoreClass}">${score||"—"}</span></td>
+      <td><button class="btn btn-outline btn-sm view-btn" data-idx="${start+i}">Voir →</button></td>`;
+    leadRows.appendChild(tr);
+  });
+
+  leadRows.querySelectorAll(".view-btn").forEach(btn=>{
+    btn.onclick=()=>openDrawer(filteredLeads[Number(btn.dataset.idx)]);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   PAGINATION
+═══════════════════════════════════════════════ */
+function renderPagination(){
+  const total=filteredLeads.length;
+  const pages=Math.ceil(total/PAGE_SIZE);
+  const start=(currentPage-1)*PAGE_SIZE+1;
+  const end=Math.min(currentPage*PAGE_SIZE, total);
+
+  paginationInfo.textContent=total?`${start}–${end} sur ${total}`:"";
+  pageBtns.innerHTML="";
+
+  if(pages<=1) return;
+
+  const addBtn=(label, page, disabled=false)=>{
+    const b=document.createElement("button");
+    b.className="page-btn"+(page===currentPage?" active":"");
+    b.textContent=label; b.disabled=disabled;
+    b.onclick=()=>{ currentPage=page; renderTable(); renderPagination(); };
+    pageBtns.appendChild(b);
+  };
+
+  addBtn("‹", currentPage-1, currentPage===1);
+  const range=[];
+  for(let p=1;p<=pages;p++){
+    if(p===1||p===pages||Math.abs(p-currentPage)<=1) range.push(p);
+    else if(range[range.length-1]!=="…") range.push("…");
+  }
+  range.forEach(p=>{
+    if(p==="…"){ const s=document.createElement("span"); s.textContent="…"; s.style.cssText="display:grid;place-items:center;width:32px;color:var(--muted)"; pageBtns.appendChild(s); }
+    else addBtn(p,p);
+  });
+  addBtn("›", currentPage+1, currentPage===pages);
+}
+
+/* ═══════════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════════ */
+function renderStats(){
+  $("statTotal").textContent = allLeads.length;
+
+  const scores=allLeads.map(l=>Number(l.score||0)).filter(s=>s>0);
+  const avg=scores.length?Math.round((scores.reduce((a,b)=>a+b,0)/scores.length)*10)/10:0;
+  $("statAvgScore").textContent=avg||"—";
+
+  const countries=[...new Set(allLeads.map(l=>l.country).filter(Boolean))];
+  $("statCountries").textContent=countries.length;
+
+  const profileFreq={};
+  allLeads.forEach(l=>{ if(l.profile){ const k=l.profile.split("—")[0].trim().split(" ").slice(0,2).join(" "); profileFreq[k]=(profileFreq[k]||0)+1; }});
+  const top=Object.entries(profileFreq).sort((a,b)=>b[1]-a[1])[0];
+  $("statTopProfile").textContent=top?top[0]:"—";
+}
+
+/* ═══════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════ */
+function renderCharts(){
+  /* Profils */
+  const profileFreq={};
+  allLeads.forEach(l=>{
+    if(!l.profile) return;
+    const k=Object.keys(PROFILE_LABELS).find(p=>l.profile.includes(p))||l.profile.split("—")[0].trim().split(" ").slice(0,3).join(" ");
+    profileFreq[k]=(profileFreq[k]||0)+1;
+  });
+  const profEntries=Object.entries(profileFreq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxProf=profEntries[0]?.[1]||1;
+  const profileChart=$("profileChart");
+  profileChart.innerHTML="";
+  profEntries.forEach(([k,v])=>{
+    const pct=Math.round((v/maxProf)*100);
+    profileChart.innerHTML+=`<div class="bar-row">
+      <span class="bar-label" title="${esc(k)}">${esc(k.length>22?k.slice(0,22)+"…":k)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-count">${v}</span>
+    </div>`;
+  });
+  if(!profEntries.length) profileChart.innerHTML=`<p style="color:var(--muted);font-size:13px;">Pas encore de données.</p>`;
+
+  /* Scores */
+  const scoreBuckets={"1–3":0,"4–5":0,"6–7":0,"8–10":0};
+  allLeads.forEach(l=>{
+    const s=Number(l.score||0);
+    if(s<=3) scoreBuckets["1–3"]++;
+    else if(s<=5) scoreBuckets["4–5"]++;
+    else if(s<=7) scoreBuckets["6–7"]++;
+    else scoreBuckets["8–10"]++;
+  });
+  const scoreEntries=Object.entries(scoreBuckets);
+  const maxScore=Math.max(...scoreEntries.map(([,v])=>v),1);
+  const scoreChart=$("scoreChart");
+  scoreChart.innerHTML="";
+  scoreEntries.forEach(([k,v])=>{
+    const pct=Math.round((v/maxScore)*100);
+    scoreChart.innerHTML+=`<div class="bar-row">
+      <span class="bar-label">Score ${esc(k)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-count">${v}</span>
+    </div>`;
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   DRAWER DÉTAIL
+═══════════════════════════════════════════════ */
+function openDrawer(lead){
+  drawerTitle.textContent = lead.name ? `Diagnostic de ${esc(lead.name)}` : "Détail du lead";
+  const date=lead.date?new Date(lead.date).toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
+  const score=Number(lead.score||0);
+  const scoreClass=score>=7?"score-high":score>=4?"score-mid":"score-low";
+
+  const fields=[
+    {label:"Date",      val:date},
+    {label:"Prénom",    val:lead.name||"—"},
+    {label:"Contact",   val:lead.contact||"Non renseigné"},
+    {label:"Pays",      val:lead.country||"—"},
+    {label:"Climat",    val:lead.climate||"—"},
+    {label:"Score",     val:`<span class="score-pill ${scoreClass}" style="font-size:18px;width:40px;height:40px;">${score||"—"}</span>`},
+    {label:"Profil",    val:lead.profile||"—"},
+    {label:"Priorité",  val:lead.priority||"—"},
+  ];
+
+  const capFields=[
+    {label:"Texture",       val:lead.texture||"—"},
+    {label:"Épaisseur",     val:lead.thickness||"—"},
+    {label:"Densité",       val:lead.density||"—"},
+    {label:"Porosité",      val:lead.porosity||"—"},
+    {label:"Élasticité",    val:lead.elasticity||"—"},
+    {label:"Longueur",      val:lead.hairLength||"—"},
+    {label:"Cuir chevelu",  val:lead.scalp||"—"},
+    {label:"Casse",         val:lead.breakage||"—"},
+    {label:"Pointes",       val:lead.splitEnds||"—"},
+    {label:"Antécédents",   val:lead.heatDamage||"—"},
+    {label:"Démêlage",      val:lead.detangling||"—"},
+    {label:"Coiffure",      val:lead.styles||"—"},
+    {label:"Accessories",   val:lead.accessories||"—"},
+    {label:"Chaleur",       val:lead.heat||"—"},
+    {label:"Protec. therm.",val:lead.heatProtectant||"—"},
+    {label:"Protéine bal.", val:lead.proteinBalance||"—"},
+  ];
+
+  const lifeFields=[
+    {label:"Eau / jour",    val:lead.water||"—"},
+    {label:"Protéines alim.",val:lead.foodProtein||"—"},
+    {label:"Hormonal",      val:lead.hormonal||"—"},
+    {label:"Stress / Sommeil",val:lead.stressSleep||"—"},
+    {label:"Compléments",   val:lead.supplements||"—"},
+    {label:"Budget",        val:lead.budget||"—"},
+    {label:"Temps dispo",   val:lead.timeAvailable||"—"},
+    {label:"Objectif",      val:lead.goal||"—"},
+  ];
+
+  const makeGrid = arr => arr.map(f=>`
+    <div class="detail-item">
+      <div class="d-label">${f.label}</div>
+      <div class="d-val">${f.val}</div>
+    </div>`).join("");
+
+  drawerBody.innerHTML=`
+    <div class="detail-section">
+      <h4>Informations générales</h4>
+      <div class="detail-grid">${makeGrid(fields)}</div>
+    </div>
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Profil capillaire</h4>
+      <div class="detail-grid">${makeGrid(capFields)}</div>
+    </div>
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Mode de vie</h4>
+      <div class="detail-grid">${makeGrid(lifeFields)}</div>
+    </div>
+    ${lead.priority?`
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Priorité de coaching</h4>
+      <p style="font-size:13.5px;line-height:1.65;color:var(--brown)">${esc(lead.priority)}</p>
+    </div>`:""}`;
+
+  drawerOverlay.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+drawerClose.onclick = closeDrawer;
+drawerOverlay.addEventListener("click", e=>{ if(e.target===drawerOverlay) closeDrawer(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
+
+function closeDrawer(){
+  drawerOverlay.classList.remove("open");
+  document.body.style.overflow="";
+}
+
+/* ═══════════════════════════════════════════════
+   EXPORT CSV
+═══════════════════════════════════════════════ */
+exportBtn.onclick = ()=>{
+  const data = filteredLeads.length ? filteredLeads : allLeads;
+  if(!data.length){ showToast("Aucun lead à exporter.","error"); return; }
+  const headers=Object.keys(data[0]);
+  const csv=[headers.join(","),...data.map(l=>headers.map(h=>`"${String(l[h]||"").replaceAll('"','""')}"`).join(","))].join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=`schicchat-leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(`${data.length} leads exportés avec succès.`,"success");
+};
+
+/* ═══════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════ */
+function esc(v){
+  return String(v)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+loadSettings();
+</script>
+</body>
+</html>
