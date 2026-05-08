@@ -732,7 +732,7 @@
 
     <div class="form-group">
       <label>Google Apps Script — Web App URL</label>
-      <input id="webAppUrl" type="text" placeholder="https://script.google.com/macros/s/…/exec" />
+      <input id="webAppUrl" type="text" placeholder="https://script.google.com/macros/s/AKfycbxB7fJUpcs1GlE2lt8b4c0gVvymWwFpppzYHWVatgLeIm137azQISfYGyhurv2DLBbwEg/exec" />
     </div>
 
     <div class="form-group">
@@ -1304,29 +1304,41 @@ function openDrawer(lead){
       <div class="d-val">${f.val}</div>
     </div>`).join("");
 
-  const conversation = Array.isArray(lead.conversation) ? lead.conversation : [];
-  const conversationHtml = conversation.length ? `
+
+  const conversation = Array.isArray(lead.conversation)
+  ? lead.conversation
+  : [];
+
+const conversationHtml = conversation.length
+  ? `
     <div class="detail-divider"></div>
     <div class="detail-section">
       <h4>Conversation complète avec la cliente</h4>
-      <div class="conversation-log">
-        ${conversation.map(m=>{
-          const role=(m.role||"bot").toLowerCase()==="client"||String(m.role||"").toLowerCase()==="user"?"client":"bot";
-          const label=role==="client"?"Cliente":"SchicChat";
-          const time=m.timestamp?new Date(m.timestamp).toLocaleString("fr-FR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
-          return `<div class="conv-msg ${role}">
-            <span class="conv-meta">${label}${time?" · "+esc(time):""}</span>
-            ${esc(m.message||"")}
-          </div>`;
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${conversation.map(m => {
+          const role = m.role === "client" || m.role === "user" ? "Cliente" : "SchicChat";
+          const bg = role === "Cliente" ? "var(--brown)" : "rgba(253,246,238,.7)";
+          const color = role === "Cliente" ? "white" : "var(--brown)";
+
+          return `
+            <div style="background:${bg};color:${color};border-radius:14px;padding:12px;font-size:13px;line-height:1.6;white-space:pre-line;">
+              <strong>${role}</strong><br>
+              ${esc(m.message || "")}
+            </div>
+          `;
         }).join("")}
       </div>
-    </div>` : `
+    </div>
+  `
+  : `
     <div class="detail-divider"></div>
     <div class="detail-section">
       <h4>Conversation complète avec la cliente</h4>
-      <p style="font-size:13.5px;line-height:1.65;color:var(--muted)">Aucune conversation enregistrée pour ce lead. Les nouveaux diagnostics seront sauvegardés avec tous les messages.</p>
-    </div>`;
-
+      <p style="font-size:13px;color:var(--muted);">
+        Aucune conversation enregistrée pour ce diagnostic.
+      </p>
+    </div>
+  `;
 
   drawerBody.innerHTML=`
     <div class="detail-section">
