@@ -201,9 +201,8 @@
    CONFIG
 ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
-  shopLink:"https://selar.com/hydratation-cheveux-crepus",
-  premiumLink:"https://selar.com/70t3ur414k",
-  webAppUrl:"https://script.google.com/macros/s/AKfycbzB5elL5KHxQBpCshjNd377J4QTlMPLmn8Xc8G8A62ZUvN8h4wDxVVKlpLZ1A_j0QEWOA/exec",
+  shopLink:"https://schicgirl-hair.github.io/Consultation/",
+  webAppUrl:"https://script.google.com/macros/s/AKfycbxB7fJUpcs1GlE2lt8b4c0gVvymWwFpppzYHWVatgLeIm137azQISfYGyhurv2DLBbwEg/exec",
   clientToken:"schicchat_client_2026-12544455",
   leadStorageKey:"schicchat_leads",
   settingsStorageKey:"schicchat_settings",
@@ -228,8 +227,8 @@ const T = {
     usedTitle:"Diagnostic déjà utilisé 💛",
     usedText:"Tu as déjà bénéficié de ton diagnostic capillaire gratuit Schicgirl.",
     usedMore:"Pour aller encore plus loin :",
-    usedShop:"💧 Guide Hydratation Cheveux Crépus",
-    usedPremium:"🌿 Diagnostic Capillaire Personnalisé Premium",
+    usedShop:"Réserve ta consultation capillaire personnalisée",
+    
     openingMsg:(name)=>`${name||"Ma belle"}, avant de lire ton diagnostic, retiens une chose :\n\nTes cheveux ne sont pas le problème.\nIls sont le reflet de ce qu'ils reçoivent — en soins, en manipulation et en nutrition.\n\nAujourd'hui, on va les écouter différemment. 💛`,
     diagReady:"✨ Voici ton diagnostic capillaire expert complet :",
     skipContact:"Continuer sans contact",
@@ -265,8 +264,8 @@ const T = {
     usedTitle:"Diagnostic already used 💛",
     usedText:"You have already received your free Schicgirl hair diagnostic.",
     usedMore:"To go even further:",
-    usedShop:"💧 Hydration Guide for Coily Hair",
-    usedPremium:"🌿 Personalised Premium Hair Diagnostic",
+    usedShop:"Réserve ta consultation capillaire personnalisée",
+    
     openingMsg:(name)=>`${name||"Beautiful"}, before reading your diagnostic, remember one thing:\n\nYour hair is not the problem.\nIt reflects what it receives — in care, handling and nutrition.\n\nToday, we're going to listen to it differently. 💛`,
     diagReady:"✨ Here is your complete expert hair diagnostic:",
     skipContact:"Continue without contact",
@@ -757,7 +756,7 @@ function showUsedScreen(){
     <p>${t("usedText")}</p>
     <p>${t("usedMore")}</p>
     <p><a href="${s.shopLink}" target="_blank">${t("usedShop")}</a></p>
-    <p><a href="${s.premiumLink}" target="_blank">${t("usedPremium")}</a></p>
+    
   </div>`;
 }
 
