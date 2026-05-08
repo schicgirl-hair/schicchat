@@ -508,6 +508,43 @@
 
     .detail-divider { height: 1px; background: rgba(176,123,56,.12); margin: 20px 0; }
 
+
+    .conversation-log{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .conv-msg{
+      border-radius:14px;
+      padding:11px 13px;
+      font-size:13px;
+      line-height:1.6;
+      white-space:pre-line;
+      border:1px solid rgba(176,123,56,.14);
+    }
+    .conv-msg.bot{
+      background:#fffaf3;
+      color:var(--brown);
+      align-self:flex-start;
+      max-width:94%;
+    }
+    .conv-msg.client{
+      background:var(--brown);
+      color:var(--white);
+      align-self:flex-end;
+      max-width:94%;
+    }
+    .conv-meta{
+      display:block;
+      font-size:10px;
+      opacity:.7;
+      margin-bottom:4px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
     /* ── TOAST ─────────────────────────────── */
     .toast {
       position: fixed;
@@ -834,7 +871,10 @@
   <aside class="drawer" id="drawer">
     <div class="drawer-head">
       <h3 id="drawerTitle">Détail du lead</h3>
-      <button class="btn btn-outline btn-sm" id="drawerClose">✕ Fermer</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-gold btn-sm" id="pdfBtn" title="Télécharger le diagnostic en PDF">⬇ PDF</button>
+        <button class="btn btn-outline btn-sm" id="drawerClose">✕ Fermer</button>
+      </div>
     </div>
     <div class="drawer-body" id="drawerBody"></div>
   </aside>
@@ -1090,12 +1130,18 @@ function renderTable(){
       <td>${esc(lead.country||"—")}</td>
       <td><span class="badge ${profMeta.badge}">${esc(profMeta.label)}</span></td>
       <td><span class="score-pill ${scoreClass}">${score||"—"}</span></td>
-      <td><button class="btn btn-outline btn-sm view-btn" data-idx="${start+i}">Voir →</button></td>`;
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm view-btn" data-idx="${start+i}">Voir →</button>
+        <button class="btn btn-gold btn-sm pdf-row-btn" data-idx="${start+i}" title="Télécharger PDF">⬇</button>
+      </td>`;
     leadRows.appendChild(tr);
   });
 
   leadRows.querySelectorAll(".view-btn").forEach(btn=>{
     btn.onclick=()=>openDrawer(filteredLeads[Number(btn.dataset.idx)]);
+  });
+  leadRows.querySelectorAll(".pdf-row-btn").forEach(btn=>{
+    btn.onclick=()=>downloadPdf(filteredLeads[Number(btn.dataset.idx)]);
   });
 }
 
@@ -1205,6 +1251,7 @@ function renderCharts(){
    DRAWER DÉTAIL
 ═══════════════════════════════════════════════ */
 function openDrawer(lead){
+  currentLeadForPdf = lead;
   drawerTitle.textContent = lead.name ? `Diagnostic de ${esc(lead.name)}` : "Détail du lead";
   const date=lead.date?new Date(lead.date).toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
   const score=Number(lead.score||0);
@@ -1257,6 +1304,30 @@ function openDrawer(lead){
       <div class="d-val">${f.val}</div>
     </div>`).join("");
 
+  const conversation = Array.isArray(lead.conversation) ? lead.conversation : [];
+  const conversationHtml = conversation.length ? `
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Conversation complète avec la cliente</h4>
+      <div class="conversation-log">
+        ${conversation.map(m=>{
+          const role=(m.role||"bot").toLowerCase()==="client"||String(m.role||"").toLowerCase()==="user"?"client":"bot";
+          const label=role==="client"?"Cliente":"SchicChat";
+          const time=m.timestamp?new Date(m.timestamp).toLocaleString("fr-FR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+          return `<div class="conv-msg ${role}">
+            <span class="conv-meta">${label}${time?" · "+esc(time):""}</span>
+            ${esc(m.message||"")}
+          </div>`;
+        }).join("")}
+      </div>
+    </div>` : `
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Conversation complète avec la cliente</h4>
+      <p style="font-size:13.5px;line-height:1.65;color:var(--muted)">Aucune conversation enregistrée pour ce lead. Les nouveaux diagnostics seront sauvegardés avec tous les messages.</p>
+    </div>`;
+
+
   drawerBody.innerHTML=`
     <div class="detail-section">
       <h4>Informations générales</h4>
@@ -1277,7 +1348,8 @@ function openDrawer(lead){
     <div class="detail-section">
       <h4>Priorité de coaching</h4>
       <p style="font-size:13.5px;line-height:1.65;color:var(--brown)">${esc(lead.priority)}</p>
-    </div>`:""}`;
+    </div>`:""}
+    ${conversationHtml}`;
 
   drawerOverlay.classList.add("open");
   document.body.style.overflow="hidden";
@@ -1286,6 +1358,8 @@ function openDrawer(lead){
 drawerClose.onclick = closeDrawer;
 drawerOverlay.addEventListener("click", e=>{ if(e.target===drawerOverlay) closeDrawer(); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
+
+$("pdfBtn").onclick = ()=> downloadPdf(currentLeadForPdf);
 
 function closeDrawer(){
   drawerOverlay.classList.remove("open");
@@ -1321,9 +1395,316 @@ function esc(v){
 }
 
 /* ═══════════════════════════════════════════════
+   PDF GENERATION — diagnostic complet
+═══════════════════════════════════════════════ */
+let currentLeadForPdf = null;
+
+function buildDiagnosticText(lead){
+  const isEN = (lead.lang === 'en');
+  const lines = [];
+  const S = isEN ? 'Schicgirl™ — Expert Hair Diagnostic' : 'Schicgirl™ — Diagnostic Capillaire Expert';
+  lines.push(S);
+  lines.push('═'.repeat(60));
+  lines.push('');
+
+  const date = lead.date ? new Date(lead.date).toLocaleDateString(isEN?'en-GB':'fr-FR',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+
+  const conversationRows = Array.isArray(lead.conversation) ? lead.conversation : [];
+  const conversationBlock = conversationRows.length ? `
+  <div class="section conversation">
+    <div class="section-title">${isEN?'Full client conversation':'Conversation complète avec la cliente'}</div>
+    ${conversationRows.map(m=>{
+      const role=(m.role||"bot").toLowerCase()==="client"||String(m.role||"").toLowerCase()==="user"?"client":"bot";
+      const label=role==="client"?(isEN?'Client':'Cliente'):'SchicChat';
+      const time=m.timestamp?new Date(m.timestamp).toLocaleString(isEN?'en-GB':'fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      return `<div class="conv-row ${role}"><span class="conv-label">${label}${time?' · '+esc(time):''}</span>${esc(m.message||'')}</div>`;
+    }).join('')}
+  </div>` : '';
+
+  lines.push((isEN?'Name: ':'Prénom : ') + (lead.name||'—'));
+  lines.push((isEN?'Date: ':'Date : ') + date);
+  lines.push((isEN?'Country: ':'Pays : ') + (lead.country||'—'));
+  lines.push((isEN?'Language: ':'Langue : ') + (lead.lang||'fr').toUpperCase());
+  lines.push('');
+  lines.push('─'.repeat(60));
+  lines.push(isEN?'HAIR HEALTH SCORE':'SCORE SANTÉ CAPILLAIRE');
+  lines.push('─'.repeat(60));
+  lines.push((isEN?'Score: ':'Score : ') + (lead.score||'—') + '/10');
+  lines.push((isEN?'Profile: ':'Profil : ') + (lead.profile||'—'));
+  lines.push((isEN?'Priority: ':'Priorité : ') + (lead.priority||'—'));
+  lines.push('');
+  lines.push('─'.repeat(60));
+  lines.push(isEN?'HAIR PROFILE':'PROFIL CAPILLAIRE');
+  lines.push('─'.repeat(60));
+  const capFields = [
+    ['texture','Texture'],['thickness', isEN?'Strand thickness':'Épaisseur'],
+    ['density', isEN?'Density':'Densité'],['porosity', isEN?'Porosity':'Porosité'],
+    ['elasticity', isEN?'Elasticity':'Élasticité'],['hairLength', isEN?'Length':'Longueur'],
+    ['scalp', isEN?'Scalp':'Cuir chevelu'],['dandruff', isEN?'Dandruff':'Pellicules'],
+    ['breakage', isEN?'Breakage':'Casse'],['splitEnds', isEN?'Split ends':'Pointes'],
+    ['heatDamage', isEN?'Chemical/heat history':'Antécédents'],
+    ['detangling', isEN?'Detangling':'Démêlage'],['styles', isEN?'Hairstyle':'Coiffure'],
+    ['accessories', isEN?'Accessories':'Accessoires'],['heat', isEN?'Heat tools':'Chaleur'],
+    ['heatProtectant', isEN?'Heat protection':'Protec. thermique'],
+    ['proteinBalance', isEN?'Protein balance':'Équilibre protéines'],
+  ];
+  capFields.forEach(([k,lbl])=>{ if(lead[k]) lines.push(`  ${lbl}: ${lead[k]}`); });
+  lines.push('');
+  lines.push('─'.repeat(60));
+  lines.push(isEN?'LIFESTYLE':'MODE DE VIE');
+  lines.push('─'.repeat(60));
+  const lifeFields = [
+    ['water', isEN?'Daily water intake':'Eau / jour'],
+    ['foodProtein', isEN?'Protein intake':'Protéines alim.'],
+    ['hormonal', isEN?'Hormonal context':'Hormonal'],
+    ['stressSleep', isEN?'Stress & sleep':'Stress / sommeil'],
+    ['supplements', isEN?'Supplements':'Compléments'],
+    ['budget', isEN?'Budget':'Budget'],
+    ['timeAvailable', isEN?'Time available':'Temps dispo'],
+    ['goal', isEN?'Goal':'Objectif'],
+  ];
+  lifeFields.forEach(([k,lbl])=>{ if(lead[k]) lines.push(`  ${lbl}: ${lead[k]}`); });
+  lines.push('');
+  lines.push('═'.repeat(60));
+  lines.push(isEN?'NOTE':'NOTE');
+  lines.push('─'.repeat(60));
+  lines.push(isEN?
+    'This diagnostic is generated automatically by SchicChat (Schicgirl™).\nFor the complete personalised routine and natural recipes, ask the client\nto access their full result from the chat app.':
+    'Ce diagnostic est généré automatiquement par SchicChat (Schicgirl™).\nPour la routine personnalisée complète et les recettes naturelles, demander à la cliente\nd\'accéder à son résultat complet depuis l\'application chat.');
+  lines.push('');
+  lines.push('schicgirl.me · contacte.schicgirl@gmail.com · © 2026 Schicgirl™');
+  return lines.join('\n');
+}
+
+function downloadPdf(lead){
+  if(!lead){ showToast(isEN_admin?'No lead selected.':'Aucun lead sélectionné.','error'); return; }
+
+  const isEN = (lead.lang === 'en');
+  const text = buildDiagnosticText(lead);
+  const name = lead.name ? lead.name.replace(/[^a-z0-9]/gi,'_') : 'diagnostic';
+  const dateStr = lead.date ? new Date(lead.date).toISOString().slice(0,10) : new Date().toISOString().slice(0,10);
+  const filename = `schicgirl_diagnostic_${name}_${dateStr}.txt`;
+
+  // Generate printable HTML for PDF via print dialog
+  const printWin = window.open('','_blank','width=900,height=700');
+  if(!printWin){ showToast('Popup bloqué. Autorise les popups pour ce site.','error'); return; }
+
+  const score = Number(lead.score||0);
+  const scoreColor = score>=7?'#3a6b4c':score>=4?'#b07b38':'#8a3a33';
+
+  const capRows = [
+    ['texture','Texture'],['thickness',isEN?'Strand thickness':'Épaisseur de mèche'],
+    ['density',isEN?'Density':'Densité'],['porosity',isEN?'Porosity':'Porosité'],
+    ['elasticity',isEN?'Elasticity':'Élasticité'],['hairLength',isEN?'Length':'Longueur'],
+    ['scalp',isEN?'Scalp condition':'Cuir chevelu'],['dandruff',isEN?'Dandruff':'Pellicules'],
+    ['breakage',isEN?'Breakage':'Casse'],['splitEnds',isEN?'Split ends':'Pointes'],
+    ['heatDamage',isEN?'Chemical/heat history':'Antécédents chimiques/thermiques'],
+    ['detangling',isEN?'Detangling method':'Méthode de démêlage'],
+    ['styles',isEN?'Daily hairstyle':'Coiffure quotidienne'],
+    ['accessories',isEN?'Night accessories':'Accessoires nuit'],
+    ['heat',isEN?'Heat tools':'Chaleur directe'],
+    ['heatProtectant',isEN?'Heat protection':'Protection thermique'],
+    ['proteinBalance',isEN?'Protein reaction':'Réaction aux protéines'],
+  ].filter(([k])=>lead[k]);
+
+  const lifeRows = [
+    ['water',isEN?'Daily water intake':'Eau / jour'],
+    ['foodProtein',isEN?'Protein in diet':'Protéines alimentaires'],
+    ['hormonal',isEN?'Hormonal context':'Contexte hormonal'],
+    ['stressSleep',isEN?'Stress & sleep':'Stress & sommeil'],
+    ['supplements',isEN?'Supplements':'Compléments alimentaires'],
+    ['budget',isEN?'Monthly budget':'Budget mensuel'],
+    ['timeAvailable',isEN?'Time available per week':'Temps disponible/semaine'],
+    ['goal',isEN?'3-month goal':'Objectif 3 mois'],
+  ].filter(([k])=>lead[k]);
+
+  const date = lead.date ? new Date(lead.date).toLocaleDateString(isEN?'en-GB':'fr-FR',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+
+  const conversationRows = Array.isArray(lead.conversation) ? lead.conversation : [];
+  const conversationBlock = conversationRows.length ? `
+  <div class="section conversation">
+    <div class="section-title">${isEN?'Full client conversation':'Conversation complète avec la cliente'}</div>
+    ${conversationRows.map(m=>{
+      const role=(m.role||"bot").toLowerCase()==="client"||String(m.role||"").toLowerCase()==="user"?"client":"bot";
+      const label=role==="client"?(isEN?'Client':'Cliente'):'SchicChat';
+      const time=m.timestamp?new Date(m.timestamp).toLocaleString(isEN?'en-GB':'fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      return `<div class="conv-row ${role}"><span class="conv-label">${label}${time?' · '+esc(time):''}</span>${esc(m.message||'')}</div>`;
+    }).join('')}
+  </div>` : '';
+
+
+  printWin.document.write(`<!DOCTYPE html><html lang="${lead.lang||'fr'}"><head>
+<meta charset="UTF-8">
+<title>Schicgirl Diagnostic — ${esc(lead.name||'Lead')}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',Arial,sans-serif;color:#3e261c;background:#fff;padding:0}
+  .page{width:210mm;min-height:297mm;padding:18mm 18mm 16mm;margin:0 auto}
+  /* header */
+  .hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #f0e0c4;padding-bottom:14px;margin-bottom:20px}
+  .hdr-brand p{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b07b38;margin-bottom:2px}
+  .hdr-brand h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:400;color:#3e261c}
+  .hdr-meta{text-align:right;font-size:10px;color:#9a7060;line-height:1.7}
+  /* score hero */
+  .score-hero{display:flex;align-items:center;gap:18px;background:#fffaf3;border:1px solid rgba(176,123,56,.25);border-radius:14px;padding:16px 20px;margin-bottom:20px}
+  .score-circle{width:70px;height:70px;border-radius:50%;border:3px solid ${scoreColor};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;background:#fff}
+  .score-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:700;color:${scoreColor};line-height:1}
+  .score-denom{font-size:10px;color:#9a7060}
+  .score-info h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:400;margin-bottom:4px}
+  .score-info p{font-size:11.5px;color:#6b3e2e;line-height:1.5}
+  /* section */
+  .section{margin-bottom:18px}
+  .section-title{font-size:8.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b07b38;padding-bottom:5px;border-bottom:1px solid #f0e0c4;margin-bottom:10px}
+  /* grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .item{background:#fdf6ee;border:1px solid rgba(176,123,56,.15);border-radius:8px;padding:7px 10px}
+  .item-label{font-size:8px;color:#9a7060;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1px}
+  .item-val{font-size:11.5px;color:#3e261c;font-weight:500}
+
+  .conversation{margin-top:16px}
+  .conv-row{border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:10.5px;line-height:1.55;border:1px solid rgba(176,123,56,.14);white-space:pre-line}
+  .conv-row.bot{background:#fffaf3;color:#3e261c}
+  .conv-row.client{background:#3e261c;color:#fff}
+  .conv-label{display:block;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+
+  /* footer */
+  .ftr{margin-top:24px;padding-top:12px;border-top:1px solid #f0e0c4;display:flex;justify-content:space-between;font-size:9px;color:#9a7060}
+  /* redflags */
+  .redflags{background:#fff5f4;border:1px solid rgba(138,58,51,.2);border-radius:10px;padding:10px 13px;margin-bottom:12px}
+  .redflags p{font-size:11px;color:#8a3a33;line-height:1.6}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:12mm}}
+</style>
+</head><body>
+<div class="page">
+
+  <div class="hdr">
+    <div class="hdr-brand">
+      <p>Schicgirl™</p>
+      <h1>${isEN?'Expert Hair Diagnostic':'Diagnostic Capillaire Expert'}</h1>
+    </div>
+    <div class="hdr-meta">
+      <div><strong>${isEN?'Client':'Cliente'}</strong> ${esc(lead.name||'—')}</div>
+      <div><strong>${isEN?'Date':'Date'}</strong> ${date}</div>
+      <div><strong>${isEN?'Country':'Pays'}</strong> ${esc(lead.country||'—')}</div>
+      <div><strong>${isEN?'Language':'Langue'}</strong> ${(lead.lang||'fr').toUpperCase()}</div>
+      ${lead.contact?`<div><strong>Contact</strong> ${esc(lead.contact)}</div>`:''}
+    </div>
+  </div>
+
+  <div class="score-hero">
+    <div class="score-circle">
+      <span class="score-num">${score}</span>
+      <span class="score-denom">/10</span>
+    </div>
+    <div class="score-info">
+      <h2>${esc(lead.profile||'—')}</h2>
+      <p><em>${isEN?'Priority:':'Priorité :'}</em> ${esc(lead.priority||'—')}</p>
+    </div>
+  </div>
+
+  ${lead.redFlags&&lead.redFlags.length?`
+  <div class="redflags">
+    <p><strong>⚠️ ${isEN?'Alert flags':'Signaux d\'alerte'}</strong></p>
+    ${lead.redFlags.map(f=>`<p>• ${esc(f)}</p>`).join('')}
+  </div>`:''}
+
+  <div class="section">
+    <div class="section-title">${isEN?'Hair Profile':'Profil Capillaire'}</div>
+    <div class="grid">
+      ${capRows.map(([k,lbl])=>`<div class="item"><div class="item-label">${lbl}</div><div class="item-val">${esc(lead[k])}</div></div>`).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">${isEN?'Lifestyle':'Mode de Vie'}</div>
+    <div class="grid">
+      ${lifeRows.map(([k,lbl])=>`<div class="item"><div class="item-label">${lbl}</div><div class="item-val">${esc(lead[k])}</div></div>`).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">${isEN?'Coaching note':'Note de coaching'}</div>
+    <p style="font-size:11px;color:#6b3e2e;line-height:1.7;background:#fdf6ee;border-radius:10px;padding:10px 13px;border:1px solid rgba(176,123,56,.15)">
+      ${isEN?
+        'This diagnostic was generated automatically by <strong>SchicChat (Schicgirl™)</strong>. To access the complete personalised routine, detailed natural recipes and full 7-day action plan, ask the client to re-open the chat app and scroll to the end of their results.':
+        'Ce diagnostic a été généré automatiquement par <strong>SchicChat (Schicgirl™)</strong>. Pour accéder à la routine personnalisée complète, aux recettes naturelles détaillées et au plan d\'action sur 7 jours, demander à la cliente de ré-ouvrir l\'application chat et de faire défiler jusqu\'à la fin de ses résultats.'}
+    </p>
+  </div>
+
+  ${conversationBlock}
+
+  <div class="ftr">
+    <span>schicgirl.me · contacte.schicgirl@gmail.com</span>
+    <span>© 2026 Schicgirl™ — ${isEN?'Confidential — for coaching use only':'Confidentiel — usage coaching uniquement'}</span>
+  </div>
+</div>
+</body></html>`);
+  printWin.document.close();
+  setTimeout(()=>{ try{ printWin.focus(); printWin.print(); }catch(e){} }, 500);
+  showToast(isEN?'PDF opened in a new window — print or save as PDF.':'PDF ouvert dans une nouvelle fenêtre — imprime ou enregistre en PDF.','success');
+}
+
+const isEN_admin = false; // Admin interface is in French
+
+/* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
 loadSettings();
+
+function buildConversationHtml(lead){
+  const conversation = Array.isArray(lead.conversation) ? lead.conversation : [];
+  if(!conversation.length){
+    return `
+      <div class="detail-divider"></div>
+      <div class="detail-section">
+        <h4>Conversation complète avec la cliente</h4>
+        <p style="font-size:13.5px;line-height:1.65;color:var(--muted)">
+          Aucune conversation enregistrée pour ce lead. Les nouveaux diagnostics seront sauvegardés avec tous les messages.
+        </p>
+      </div>`;
+  }
+
+  return `
+    <div class="detail-divider"></div>
+    <div class="detail-section">
+      <h4>Conversation complète avec la cliente</h4>
+      <div class="conversation-log">
+        ${conversation.map(m=>{
+          const roleRaw = String(m.role || "bot").toLowerCase();
+          const role = roleRaw === "client" || roleRaw === "user" ? "client" : "bot";
+          const label = role === "client" ? "Cliente" : "SchicChat";
+          const time = m.timestamp ? new Date(m.timestamp).toLocaleString("fr-FR",{
+            day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"
+          }) : "";
+          return `<div class="conv-msg ${role}">
+            <span class="conv-meta">${label}${time ? " · " + esc(time) : ""}</span>
+            ${esc(m.message || "")}
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+}
+
+
+async function testAdminConnection(){
+  const url = localStorage.getItem("schic_admin_url") || (document.getElementById("webAppUrl") ? document.getElementById("webAppUrl").value.trim() : "");
+  const token = localStorage.getItem("schic_admin_token") || (document.getElementById("adminToken") ? document.getElementById("adminToken").value.trim() : "");
+  if(!url || !token){
+    showToast ? showToast("Ajoute le Web App URL et le token admin avant de tester.","error") : alert("Ajoute le Web App URL et le token admin.");
+    return;
+  }
+  try{
+    const res = await fetch(`${url}?action=listLeads&adminToken=${encodeURIComponent(token)}`);
+    const txt = await res.text();
+    console.log("Admin connection test:", txt);
+    showToast ? showToast("Test admin envoyé. Regarde la console ou clique Rafraîchir.","success") : alert("Test admin envoyé.");
+  }catch(err){
+    console.error(err);
+    showToast ? showToast("Erreur test admin. Vérifie Apps Script.","error") : alert("Erreur test admin.");
+  }
+}
+
 </script>
 </body>
 </html>
