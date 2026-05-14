@@ -266,11 +266,6 @@ const T = {
     diagReady:"✨ Here is your complete expert hair diagnostic:",
     skipContact:"Continue without contact",
     offerTitle:"💛 Want to go further with me?",
-    offerIntro:"Your diagnostic gives you a clear direction and concrete tools. What makes the real difference now is ongoing support and fine personalisation.",
-    offerShopDesc:"<strong>💧 The hydration guide</strong> — Master hydration for coily hair from A to Z: methods, products, frequency, mistakes to avoid.",
-    offerPremiumDesc:"<strong>🌿 The premium personalised routine</strong> — Complete individual coaching: a routine built for YOUR exact profile, your products, your water, your climate and your schedule.",
-    offerShopBtn:"💧 Hydration Guide — Access",
-    offerPremiumBtn:"🌿 Premium Personalised Routine — Access",
     offerFooter:"This diagnostic is a solid starting point. Your hair deserves guidance that grows with you. I trust you to choose what's right for you. 💛",
     btnShop:"Hydration guide",btnPremium:"Premium routine",btnRestart:"Start over",
     // Score labels
@@ -1556,7 +1551,6 @@ async function buildDiagnosis(){
   const offerEl=document.createElement("div");offerEl.className="msg html-msg";
   offerEl.innerHTML=`<div class="offer-wrap">
     <h3>${t("offerTitle")}</h3>
-    <p>${t("offerIntro")}</p>
     <p>${t("offerShopDesc")}</p>
     <p>${t("offerPremiumDesc")}</p>
     <div class="offer-btns">
