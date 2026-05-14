@@ -142,6 +142,15 @@
     .recipe-card { background:rgba(253,246,238,.7); border:1px solid rgba(176,123,56,.22); border-radius:14px; padding:13px 15px; margin-bottom:10px; font-size:13px; line-height:1.65; }
     .recipe-card strong { color:var(--gold); display:block; margin-bottom:5px; font-size:14px; }
     .recipe-sub { font-weight:600; font-size:11.5px; color:var(--gold); margin:7px 0 2px; display:block; }
+    .offer-wrap { background:linear-gradient(145deg,#fffaf3,#fff5ea); border:1px solid rgba(176,123,56,.35); border-radius:var(--radius); padding:20px; }
+    .offer-wrap h3 { font-family:var(--serif); font-size:22px; font-weight:400; margin-bottom:10px; }
+    .offer-wrap p { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:9px; }
+    .offer-btns { display:grid; gap:10px; margin:14px 0; }
+    .offer-btn { display:block; text-align:center; text-decoration:none; padding:13px 18px; border-radius:999px; font-family:var(--sans); font-size:13.5px; font-weight:700; transition:all .2s; }
+    .offer-btn.primary { background:var(--brown); color:var(--white); }
+    .offer-btn.primary:hover { background:var(--brown-md); }
+    .offer-btn.gold { background:linear-gradient(135deg,var(--gold),var(--gold-lt)); color:var(--white); }
+    .offer-btn.gold:hover { filter:brightness(1.06); }
     .used-screen { padding:36px 24px; text-align:center; }
     .used-screen h2 { font-family:var(--serif); font-size:28px; font-weight:400; margin-bottom:12px; }
     .used-screen p { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:8px; }
@@ -193,7 +202,7 @@
 ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
   shopLink:"https://schicgirl-hair.github.io/Consultation/",
-  webAppUrl:"https://script.google.com/macros/s/AKfycbxfGyf0CseqqyLJlHhV3Se2frgkXBEP4drhZxkPeNoGrshrK6tGY8c9U5WWUIZgBHIg2g/exec",
+  webAppUrl:"https://script.google.com/macros/s/AKfycbxB7fJUpcs1GlE2lt8b4c0gVvymWwFpppzYHWVatgLeIm137azQISfYGyhurv2DLBbwEg/exec",
   clientToken:"schicchat_client_2026-12544455",
   leadStorageKey:"schicchat_leads",
   settingsStorageKey:"schicchat_settings",
@@ -223,6 +232,14 @@ const T = {
     openingMsg:(name)=>`${name||"Ma belle"}, avant de lire ton diagnostic, retiens une chose :\n\nTes cheveux ne sont pas le problème.\nIls sont le reflet de ce qu'ils reçoivent — en soins, en manipulation et en nutrition.\n\nAujourd'hui, on va les écouter différemment. 💛`,
     diagReady:"✨ Voici ton diagnostic capillaire expert complet :",
     skipContact:"Continuer sans contact",
+    offerTitle:"💛 Si tu veux aller plus loin avec moi",
+    offerIntro:"Ton diagnostic te donne une direction claire et des outils concrets. Ce qui fait la vraie différence maintenant, c'est un soutien continu et une personnalisation fine.",
+    offerShopDesc:"<strong>💧 Le guide hydratation</strong> — Maîtrise l'hydratation des cheveux crépus de A à Z : méthodes, produits, fréquences, erreurs à éviter.",
+    offerPremiumDesc:"<strong>🌿 La routine personnalisée premium</strong> — Un accompagnement individuel complet : routine construite pour TON profil exact, tes produits, ton eau, ton climat et ton emploi du temps.",
+    offerShopBtn:"💧 Guide Hydratation — Accéder",
+    offerPremiumBtn:"🌿 Routine Personnalisée Premium — Accéder",
+    offerFooter:"Ce diagnostic est un point de départ solide. Tes cheveux méritent un accompagnement qui évolue avec eux. Je te fais confiance pour choisir ce qui est juste pour toi. 💛",
+    btnShop:"Guide hydratation",btnPremium:"Routine premium",btnRestart:"Recommencer",
     // Score labels
     scoreLabel:"Score santé capillaire",
     profileLabel:"Profil détecté",
@@ -252,6 +269,14 @@ const T = {
     openingMsg:(name)=>`${name||"Beautiful"}, before reading your diagnostic, remember one thing:\n\nYour hair is not the problem.\nIt reflects what it receives — in care, handling and nutrition.\n\nToday, we're going to listen to it differently. 💛`,
     diagReady:"✨ Here is your complete expert hair diagnostic:",
     skipContact:"Continue without contact",
+    offerTitle:"💛 Want to go further with me?",
+    offerIntro:"Your diagnostic gives you a clear direction and concrete tools. What makes the real difference now is ongoing support and fine personalisation.",
+    offerShopDesc:"<strong>💧 The hydration guide</strong> — Master hydration for coily hair from A to Z: methods, products, frequency, mistakes to avoid.",
+    offerPremiumDesc:"<strong>🌿 The premium personalised routine</strong> — Complete individual coaching: a routine built for YOUR exact profile, your products, your water, your climate and your schedule.",
+    offerShopBtn:"💧 Hydration Guide — Access",
+    offerPremiumBtn:"🌿 Premium Personalised Routine — Access",
+    offerFooter:"This diagnostic is a solid starting point. Your hair deserves guidance that grows with you. I trust you to choose what's right for you. 💛",
+    btnShop:"Hydration guide",btnPremium:"Premium routine",btnRestart:"Start over",
     // Score labels
     scoreLabel:"Hair health score",
     profileLabel:"Profile detected",
@@ -890,7 +915,13 @@ function stripHtmlToText(html){
 }
 
 function ensureConversationArray(){
-  if(!Array.isArray(state.conversation)) state.conversation = [];
+
+  if(!Array.isArray(state.conversation)){
+
+    state.conversation = [];
+
+  }
+
 }
 
 function recordConversationMessage(role, content, isHtml=false){
@@ -916,7 +947,7 @@ function recordConversationMessage(role, content, isHtml=false){
 ═══════════════════════════════════════════════════════════ */
 function saveLead(){
   ensureConversationArray();
-
+  console.log("CONVERSATION:", state.conversation);
   const lead = {
     ...state,
     conversation: [...(state.conversation || [])],
@@ -990,7 +1021,8 @@ function analyzeProfile(){
   let profile=isEN?"Routine to build":"Routine à construire";
   let priority=isEN?"establish a healthy, consistent foundation":"établir une base saine et cohérente";
   let summary=isEN?"Your hair needs a clear routine. Without a stable base, occasional treatments can't produce lasting results.":"Tes cheveux ont besoin d'une routine claire. Sans base stable, les soins ponctuels ne produisent pas de résultats durables.";
-  
+  let offer=isEN?"Personalised Hair Routine":"Routine Capillaire Personnalisée";
+
   if(state.mainProblem==="dryness"||state.goal==="hydration"||["two_weeks_plus","unknown"].includes(state.lastHydration)){
     profile=isEN?"Chronic dryness — hydration to rebuild":"Sécheresse chronique — hydratation à reconstruire";offer=isEN?"Hydration Guide":"Guide Hydratation";
     priority=state.porosity==="high"?(isEN?"improve moisture retention and seal effectively":"améliorer la rétention d'hydratation et sceller efficacement"):(isEN?"allow hydration to penetrate durably without overloading":"faire pénétrer l'hydratation durablement sans surcharger");
@@ -1527,10 +1559,51 @@ async function buildDiagnosis(){
   <div class="r-label">${t("bonusLabel")}</div>
   <p style="white-space:pre-line">${a.bonus}</p>
 </div>`;
-  removeTyping();chatBox.appendChild(resultEl);
-  recordConversationMessage("bot", resultEl.innerText || resultEl.textContent || "", false);
-  setTimeout(()=>resultEl.scrollIntoView({behavior:"smooth",block:"start"}),80);
-  const sets=getSettings();
+  removeTyping();
+
+chatBox.appendChild(resultEl);
+
+recordConversationMessage(
+  "bot",
+  resultEl.innerText || resultEl.textContent || "",
+  false
+);
+
+setTimeout(() =>
+  resultEl.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  }),80);
+
+
+// Hide input
+document.getElementById("chatForm").style.display = "none";
+
+// Hide quick replies
+document.getElementById("quickReplies").style.display = "none";
+
+// Save final conversation
+saveLead();
+
+// Mark diagnostic used
+markUsed();
+
+// Optional restart button only
+if(!CONFIG.enableOneUse){
+
+  setTimeout(()=>{
+
+    setReplies([
+      {
+        label:t("btnRestart"),
+        value:"restart"
+      }
+    ]);
+
+  },600);
+
+}
+}
 
 /* ═══════════════════════════════════════════════════════════
    EVENTS
