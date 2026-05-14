@@ -232,10 +232,6 @@ const T = {
     openingMsg:(name)=>`${name||"Ma belle"}, avant de lire ton diagnostic, retiens une chose :\n\nTes cheveux ne sont pas le problème.\nIls sont le reflet de ce qu'ils reçoivent — en soins, en manipulation et en nutrition.\n\nAujourd'hui, on va les écouter différemment. 💛`,
     diagReady:"✨ Voici ton diagnostic capillaire expert complet :",
     skipContact:"Continuer sans contact",
-    offerTitle:"💛 Si tu veux aller plus loin avec moi",
-    offerPremiumBtn:"🌿 Consultation — Accéder",
-    offerFooter:"Cette consultation est un point de départ solide. Tes cheveux méritent un accompagnement qui évolue avec eux. Je te fais confiance pour choisir ce qui est juste pour toi. 💛",
-    btnShop:"Consultation Capillaire",btnPremium:"Consultation premium",btnRestart:"Recommencer",
     // Score labels
     scoreLabel:"Score santé capillaire",
     profileLabel:"Profil détecté",
@@ -265,9 +261,6 @@ const T = {
     openingMsg:(name)=>`${name||"Beautiful"}, before reading your diagnostic, remember one thing:\n\nYour hair is not the problem.\nIt reflects what it receives — in care, handling and nutrition.\n\nToday, we're going to listen to it differently. 💛`,
     diagReady:"✨ Here is your complete expert hair diagnostic:",
     skipContact:"Continue without contact",
-    offerTitle:"💛 Want to go further with me?",
-    offerFooter:"This diagnostic is a solid starting point. Your hair deserves guidance that grows with you. I trust you to choose what's right for you. 💛",
-    btnShop:"Hydration guide",btnPremium:"Premium routine",btnRestart:"Start over",
     // Score labels
     scoreLabel:"Hair health score",
     profileLabel:"Profile detected",
@@ -1006,8 +999,7 @@ function analyzeProfile(){
   let profile=isEN?"Routine to build":"Routine à construire";
   let priority=isEN?"establish a healthy, consistent foundation":"établir une base saine et cohérente";
   let summary=isEN?"Your hair needs a clear routine. Without a stable base, occasional treatments can't produce lasting results.":"Tes cheveux ont besoin d'une routine claire. Sans base stable, les soins ponctuels ne produisent pas de résultats durables.";
-  let offer=isEN?"Personalised Hair Routine":"Routine Capillaire Personnalisée";
-
+  
   if(state.mainProblem==="dryness"||state.goal==="hydration"||["two_weeks_plus","unknown"].includes(state.lastHydration)){
     profile=isEN?"Chronic dryness — hydration to rebuild":"Sécheresse chronique — hydratation à reconstruire";offer=isEN?"Hydration Guide":"Guide Hydratation";
     priority=state.porosity==="high"?(isEN?"improve moisture retention and seal effectively":"améliorer la rétention d'hydratation et sceller efficacement"):(isEN?"allow hydration to penetrate durably without overloading":"faire pénétrer l'hydratation durablement sans surcharger");
@@ -1548,23 +1540,6 @@ async function buildDiagnosis(){
   recordConversationMessage("bot", resultEl.innerText || resultEl.textContent || "", false);
   setTimeout(()=>resultEl.scrollIntoView({behavior:"smooth",block:"start"}),80);
   const sets=getSettings();
-  const offerEl=document.createElement("div");offerEl.className="msg html-msg";
-  offerEl.innerHTML=`<div class="offer-wrap">
-    <h3>${t("offerTitle")}</h3>
-    <p>${t("offerShopDesc")}</p>
-    <p>${t("offerPremiumDesc")}</p>
-    <div class="offer-btns">
-      <a class="offer-btn primary" href="${sets.shopLink}" target="_blank" rel="noopener">${t("offerShopBtn")}</a>
-      <a class="offer-btn gold" href="${sets.premiumLink}" target="_blank" rel="noopener">${t("offerPremiumBtn")}</a>
-    </div>
-    <p style="font-size:12px">${t("offerFooter")}</p>
-  </div>`;
-  setTimeout(()=>{chatBox.appendChild(offerEl);recordConversationMessage("bot", offerEl.innerText || offerEl.textContent || "", false);chatBox.scrollTop=chatBox.scrollHeight;},500);
-  saveLead();markUsed();
-  const replies=[{label:t("btnShop"),value:"shop"},{label:t("btnPremium"),value:"premium"}];
-  if(!CONFIG.enableOneUse)replies.push({label:t("btnRestart"),value:"restart"});
-  setTimeout(()=>setReplies(replies),600);
-}
 
 /* ═══════════════════════════════════════════════════════════
    EVENTS
